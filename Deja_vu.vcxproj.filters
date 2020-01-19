@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <FxCompile Include="HLSL\Basic_PS_2D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Basic_PS_3D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Basic_VS_2D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Basic_VS_3D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dApp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTrace.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameApp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraN.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceDepot.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dApp.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTrace.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameApp.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDepot.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraN.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HLSL\Basic.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="HLSL\LightHelper.hlsli">
+      <Filter>Head</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{8e2969f7-1dec-46b3-9737-248e07f5d911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{60f2a452-c32d-473b-bf02-f356ee12fb09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Head">
+      <UniqueIdentifier>{4025ae30-e65c-4057-ad98-a623c99f65f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
