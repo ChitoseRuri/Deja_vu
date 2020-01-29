@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "d3dApp.h"
 #include <vector>
 
@@ -69,5 +69,9 @@ public:
 
 	const bool getActiveUpdate() const;
 	void setActiveUpdate(bool lb);
+
+	virtual void update(float dt);
+	virtual void draw(ID3D11DeviceContext* pDeviceContext);
+
 };
 

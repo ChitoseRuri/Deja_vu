@@ -1,4 +1,4 @@
-﻿#include "GameObject.h"
+#include "GameObject.h"
 
 std::vector<GameObjectN*> GameObjectN::m_gameObjectList, GameObjectN::m_updateList, GameObjectN::m_drawList;
 
@@ -159,4 +159,12 @@ void GameObjectN::setActiveUpdate(bool lb)
 		m_updateList[m_updateIndex] = nullptr;
 		m_updateIndex = -1;
 	}
+}
+
+void GameObjectN::update(float dt)
+{
+}
+
+void GameObjectN::draw(ID3D11DeviceContext* pDeviceContext)
+{
 }
