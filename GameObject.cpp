@@ -40,7 +40,10 @@ GameObjectN::~GameObjectN()
 
 void GameObjectN::updateAll(float dt)
 {
-	// TODO
+	for (auto p : m_updateList)
+	{
+		p->update(dt);
+	}
 }
 
 void GameObjectN::drawAll(ID3D11DeviceContext* pDeviceContext)

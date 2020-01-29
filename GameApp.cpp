@@ -5,7 +5,6 @@ using namespace DirectX;
 
 GameApp::GameApp(HINSTANCE hInstance)
 	: D3DApp(hInstance),
-	m_CameraMode(CameraMode::FirstPerson),
 	m_CBFrame(),
 	m_CBOnResize(),
 	m_CBRarely()
@@ -100,116 +99,13 @@ void GameApp::UpdateScene(float dt)
 	Keyboard::State keyState = m_pKeyboard->GetState();
 	m_KeyboardTracker.Update(keyState);
 
-	// 获取子类
-	auto cam1st = m_pCamera;// std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
-	auto cam3rd = m_pCamera;// std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
-
-	
-	//if (m_CameraMode == CameraMode::FirstPerson || m_CameraMode == CameraMode::Free)
-	//{
-	//	// 第一人称/自由摄像机的操作
-
-	//	// 方向移动
-	//	if (keyState.IsKeyDown(Keyboard::W))
-	//	{
-	//		if (m_CameraMode == CameraMode::FirstPerson)
-	//			cam1st->Walk(dt * 3.0f);
-	//		else
-	//			cam1st->MoveForward(dt * 3.0f);
-	//	}	
-	//	if (keyState.IsKeyDown(Keyboard::S))
-	//	{
-	//		if (m_CameraMode == CameraMode::FirstPerson)
-	//			cam1st->Walk(dt * -3.0f);
-	//		else
-	//			cam1st->MoveForward(dt * -3.0f);
-	//	}
-	//	if (keyState.IsKeyDown(Keyboard::A))
-	//		cam1st->Strafe(dt * -3.0f);
-	//	if (keyState.IsKeyDown(Keyboard::D))
-	//		cam1st->Strafe(dt * 3.0f);
-
-	//	// 将位置限制在[-8.9f, 8.9f]的区域内
-	//	// 不允许穿地
-	//	XMFLOAT3 adjustedPos;
-	//	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(), XMVectorSet(-8.9f, 0.0f, -8.9f, 0.0f), XMVectorReplicate(8.9f)));
-	//	cam1st->SetPosition(adjustedPos);
-
-	//	// 仅在第一人称模式移动箱子
-	//	if (m_CameraMode == CameraMode::FirstPerson)
-	//		m_WoodCrate.SetWorldMatrix(XMMatrixTranslation(adjustedPos.x, adjustedPos.y, adjustedPos.z));
-	//	// 视野旋转，防止开始的差值过大导致的突然旋转
-	//	cam1st->Pitch(mouseState.y * dt * 1.25f);
-	//	cam1st->RotateY(mouseState.x * dt * 1.25f);
-	//}
-	//else if (m_CameraMode == CameraMode::ThirdPerson)
-	//{
-	//	// 第三人称摄像机的操作
-
-	//	cam3rd->SetTarget(m_WoodCrate.GetPosition());
-
-	//	// 绕物体旋转
-	//	cam3rd->RotateX(mouseState.y * dt * 1.25f);
-	//	cam3rd->RotateY(mouseState.x * dt * 1.25f);
-	//	cam3rd->Approach(-mouseState.scrollWheelValue / 120 * 1.0f);
-	//}
-
 	// 更新观察矩阵
-	m_pCamera->update(0);
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->GetViewXM());
 
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
-	
-	// 摄像机模式切换
-	//if (m_KeyboardTracker.IsKeyPressed(Keyboard::D1) && m_CameraMode != CameraMode::FirstPerson)
-	//{
-	//	if (!cam1st)
-	//	{
-	//		cam1st.reset(new FirstPersonCamera);
-	//		cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-	//		m_pCamera = cam1st;
-	//	}
-
-	//	cam1st->LookTo(m_WoodCrate.GetPosition(),
-	//		XMFLOAT3(0.0f, 0.0f, 1.0f),
-	//		XMFLOAT3(0.0f, 1.0f, 0.0f));
-	//	
-	//	m_CameraMode = CameraMode::FirstPerson;
-	//}
-	//else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D2) && m_CameraMode != CameraMode::ThirdPerson)
-	//{
-	//	if (!cam3rd)
-	//	{
-	//		cam3rd.reset(new ThirdPersonCamera);
-	//		cam3rd->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-	//		m_pCamera = cam3rd;
-	//	}
-	//	XMFLOAT3 target = m_WoodCrate.GetPosition();
-	//	cam3rd->SetTarget(target);
-	//	cam3rd->SetDistance(8.0f);
-	//	cam3rd->SetDistanceMinMax(3.0f, 20.0f);
-	//	
-	//	m_CameraMode = CameraMode::ThirdPerson;
-	//}
-	//else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D3) && m_CameraMode != CameraMode::Free)
-	//{
-	//	if (!cam1st)
-	//	{
-	//		cam1st.reset(new FirstPersonCamera);
-	//		cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-	//		m_pCamera = cam1st;
-	//	}
-	//	// 从箱子上方开始
-	//	XMFLOAT3 pos = m_WoodCrate.GetPosition();
-	//	XMFLOAT3 to = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	//	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	//	pos.y += 3;
-	//	cam1st->LookTo(pos, to, up);
-
-	//	m_CameraMode = CameraMode::Free;
-	//}
+	GameObjectN::updateAll(dt);
 	// 退出程序，这里应向窗口发送销毁信息
 	if (keyState.IsKeyDown(Keyboard::Escape))
 		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
@@ -232,9 +128,9 @@ void GameApp::DrawScene()
 	// 绘制几何模型
 	//
 	m_WoodCrate.Draw(m_pd3dImmediateContext.Get());
-	m_Floor.Draw(m_pd3dImmediateContext.Get());
-	for (auto& wall : m_Walls)
-		wall.Draw(m_pd3dImmediateContext.Get());
+	//m_Floor.Draw(m_pd3dImmediateContext.Get());
+	//for (auto& wall : m_Walls)
+	//	wall.Draw(m_pd3dImmediateContext.Get());
 
 	//
 	// 绘制Direct2D部分
@@ -246,12 +142,6 @@ void GameApp::DrawScene()
 			L"W/S/A/D 前进/后退/左平移/右平移 (第三人称无效)  Esc退出\n"
 			L"鼠标移动控制视野 滚轮控制第三人称观察距离\n"
 			L"当前模式: ";
-		if (m_CameraMode == CameraMode::FirstPerson)
-			text += L"第一人称(控制箱子移动)";
-		else if (m_CameraMode == CameraMode::ThirdPerson)
-			text += L"第三人称";
-		else
-			text += L"自由视角";
 		m_pd2dRenderTarget->DrawTextW(text.c_str(), (UINT32)text.length(), m_pTextFormat.Get(),
 			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
 		HR(m_pd2dRenderTarget->EndDraw());
@@ -310,31 +200,34 @@ bool GameApp::InitResource()
 	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[3].GetAddressOf()));
 	// ******************
 	// 初始化游戏对象
-	ComPtr<ID3D11ShaderResourceView> texture;
+	size_t index;
 	// 初始化木箱
-	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, texture.GetAddressOf()));
+	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr);
+	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, texture.GetAddressOf()));
 	m_WoodCrate.SetBuffer(m_pd3dDevice.Get(), Geometry::CreateBox());
-	m_WoodCrate.SetTexture(texture.Get());
+	m_WoodCrate.SetTexture(m_resourceDepot.getShaderResource(index).Get());
 	
 	// 初始化地板
-	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr, texture.ReleaseAndGetAddressOf()));
-	m_Floor.SetBuffer(m_pd3dDevice.Get(),
+	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr);
+	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr, texture.ReleaseAndGetAddressOf()));
+	/*m_Floor.SetBuffer(m_pd3dDevice.Get(),
 		Geometry::CreatePlane(XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2(20.0f, 20.0f), XMFLOAT2(5.0f, 5.0f)));
-	m_Floor.SetTexture(texture.Get());
+	m_Floor.SetTexture(m_resourceDepot.getShaderResource(index).Get());*/
 
-	// 初始化墙体
-	m_Walls.resize(4);
-	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\brick.dds", nullptr, texture.ReleaseAndGetAddressOf()));
-	// 这里控制墙体四个面的生成
-	for (int i = 0; i < 4; ++i)
-	{
-		m_Walls[i].SetBuffer(m_pd3dDevice.Get(),
-			Geometry::CreatePlane(XMFLOAT3(), XMFLOAT2(20.0f, 8.0f), XMFLOAT2(5.0f, 1.5f)));
-		XMMATRIX world = XMMatrixRotationX(-XM_PIDIV2) * XMMatrixRotationY(XM_PIDIV2 * i)
-			* XMMatrixTranslation(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
-		m_Walls[i].SetWorldMatrix(world);
-		m_Walls[i].SetTexture(texture.Get());
-	}
+	//// 初始化墙体
+	//m_Walls.resize(4);
+	//index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\brick.dds", nullptr);
+	////HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\brick.dds", nullptr, texture.ReleaseAndGetAddressOf()));
+	//// 这里控制墙体四个面的生成
+	//for (int i = 0; i < 4; ++i)
+	//{
+	//	m_Walls[i].SetBuffer(m_pd3dDevice.Get(),
+	//		Geometry::CreatePlane(XMFLOAT3(), XMFLOAT2(20.0f, 8.0f), XMFLOAT2(5.0f, 1.5f)));
+	//	XMMATRIX world = XMMatrixRotationX(-XM_PIDIV2) * XMMatrixRotationY(XM_PIDIV2 * i)
+	//		* XMMatrixTranslation(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
+	//	m_Walls[i].SetWorldMatrix(world);
+	//	m_Walls[i].SetTexture(m_resourceDepot.getShaderResource(index).Get());
+	//}
 		
 	// 初始化采样器状态
 	D3D11_SAMPLER_DESC sampDesc;
@@ -352,12 +245,9 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
-	m_CameraMode = CameraMode::FirstPerson;
-	//auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
 	m_pCamera = std::shared_ptr<CameraN>(new CameraN);
 	m_pCamera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	m_pCamera->LookAt(XMFLOAT3(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-
+	m_pCamera->LookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// 初始化仅在窗口大小变动时修改的值
 	m_pCamera->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
 	m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->GetProjXM());
@@ -425,12 +315,12 @@ bool GameApp::InitResource()
 	D3D11SetDebugObjectName(m_pPixelShader2D.Get(), "Basic_PS_2D");
 	D3D11SetDebugObjectName(m_pPixelShader3D.Get(), "Basic_PS_3D");
 	D3D11SetDebugObjectName(m_pSamplerState.Get(), "SSLinearWrap");
-	m_Floor.SetDebugObjectName("Floor");
+	//m_Floor.SetDebugObjectName("Floor");
 	m_WoodCrate.SetDebugObjectName("WoodCrate");
-	m_Walls[0].SetDebugObjectName("Walls[0]");
+	/*m_Walls[0].SetDebugObjectName("Walls[0]");
 	m_Walls[1].SetDebugObjectName("Walls[1]");
 	m_Walls[2].SetDebugObjectName("Walls[2]");
-	m_Walls[3].SetDebugObjectName("Walls[3]");
+	m_Walls[3].SetDebugObjectName("Walls[3]");*/
 
 
 	return true;

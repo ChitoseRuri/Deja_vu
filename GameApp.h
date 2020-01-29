@@ -6,6 +6,7 @@
 #include "LightHelper.h"
 #include "Camera.h"
 #include "CameraN.h"
+#include "ResourceDepot.h"
 
 class GameApp : public D3DApp
 {
@@ -71,9 +72,6 @@ public:
 		UINT m_VertexStride;								// 顶点字节大小
 		UINT m_IndexCount;								    // 索引数目	
 	};
-
-	// 摄像机模式
-	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	
 public:
 	GameApp(HINSTANCE hInstance);
@@ -99,8 +97,8 @@ private:
 	ComPtr<ID3D11Buffer> m_pConstantBuffers[4];				    // 常量缓冲区
 
 	GameObject m_WoodCrate;									    // 木盒
-	GameObject m_Floor;										    // 地板
-	std::vector<GameObject> m_Walls;							// 墙壁
+	//GameObject m_Floor;										    // 地板
+	//std::vector<GameObject> m_Walls;							// 墙壁
 
 	ComPtr<ID3D11VertexShader> m_pVertexShader3D;				// 用于3D的顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader3D;				    // 用于3D的像素着色器
@@ -114,8 +112,7 @@ private:
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
 	std::shared_ptr<CameraN> m_pCamera;						    // 摄像机
-	CameraMode m_CameraMode;									// 摄像机模式
-
+	ResourceDepot m_resourceDepot;
 };
 
 

@@ -53,16 +53,16 @@ public:
 	static void drawAll(ID3D11DeviceContext* pDeviceContext);			// 绘制全部
 
 	const XMFLOAT3& getLocation() const;
-	void setLocation(float x, float y, float z);
-	void setLocation(const XMFLOAT3& location);
+	virtual void setLocation(float x, float y, float z);
+	virtual void setLocation(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
-	void setScale(float x, float y, float z);
-	void setScale(const XMFLOAT3& scale);
+	virtual void setScale(float x, float y, float z);
+	virtual void setScale(const XMFLOAT3& scale);
 
 	const XMFLOAT3& getRotation() const;
-	void setRotation(float x, float y, float z);
-	void setRotation(const XMFLOAT3& rotation);
+	virtual void setRotation(float x, float y, float z);
+	virtual void setRotation(const XMFLOAT3& rotation);
 
 	const bool getVisable() const;
 	void setVisable(bool lb);
