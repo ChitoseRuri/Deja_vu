@@ -1,8 +1,8 @@
 #include "GameObject.h"
 
-std::vector<GameObjectN*> GameObjectN::m_gameObjectList, GameObjectN::m_updateList, GameObjectN::m_drawList;
+std::vector<GameObject*> GameObject::m_gameObjectList, GameObject::m_updateList, GameObject::m_drawList;
 
-GameObjectN::GameObjectN() :
+GameObject::GameObject() :
 	m_parent(nullptr),
 	m_location(.0f, .0f, .0f),
 	m_scale(1.0f, 1.0f, 1.0f),
@@ -34,13 +34,13 @@ GameObjectN::GameObjectN() :
 	setVisable(true);
 }
 
-GameObjectN::~GameObjectN()
+GameObject::~GameObject()
 {
 	m_gameObjectList[m_gameObjectIndex] = nullptr;
 	m_gameObjectIndex = -1;
 }
 
-void GameObjectN::updateAll(float dt)
+void GameObject::updateAll(float dt)
 {
 	for (auto p : m_updateList)
 	{
@@ -48,62 +48,62 @@ void GameObjectN::updateAll(float dt)
 	}
 }
 
-void GameObjectN::drawAll(ID3D11DeviceContext* pDeviceContext)
+void GameObject::drawAll(ID3D11DeviceContext* pDeviceContext)
 {
 	// TODO
 }
 
-const XMFLOAT3& GameObjectN::getLocation() const
+const XMFLOAT3& GameObject::getLocation() const
 {
 	return m_location;
 }
 
-void GameObjectN::setLocation(float x, float y, float z)
+void GameObject::setLocation(float x, float y, float z)
 {
 	m_location = { x, y, z };
 }
 
-void GameObjectN::setLocation(const XMFLOAT3& location)
+void GameObject::setLocation(const XMFLOAT3& location)
 {
 	m_location = location;
 }
 
-const XMFLOAT3& GameObjectN::getScale() const
+const XMFLOAT3& GameObject::getScale() const
 {
 	return m_scale;
 }
 
-void GameObjectN::setScale(float x, float y, float z)
+void GameObject::setScale(float x, float y, float z)
 {
 	m_scale = { x, y, z };
 }
 
-void GameObjectN::setScale(const XMFLOAT3& scale)
+void GameObject::setScale(const XMFLOAT3& scale)
 {
 	m_scale = scale;
 }
 
-const XMFLOAT3& GameObjectN::getRotation() const
+const XMFLOAT3& GameObject::getRotation() const
 {
 	return m_rotation;
 }
 
-void GameObjectN::setRotation(float x, float y, float z)
+void GameObject::setRotation(float x, float y, float z)
 {
 	m_rotation = { x, y, z };
 }
 
-void GameObjectN::setRotation(const XMFLOAT3& rotation)
+void GameObject::setRotation(const XMFLOAT3& rotation)
 {
 	m_rotation = rotation;
 }
 
-const bool GameObjectN::getVisable() const
+const bool GameObject::getVisable() const
 {
 	return m_status & Status::visable;
 }
 
-void GameObjectN::setVisable(bool lb)
+void GameObject::setVisable(bool lb)
 {
 	if (lb && m_drawIndex == -1)
 	{
@@ -132,12 +132,12 @@ void GameObjectN::setVisable(bool lb)
 	}
 }
 
-const bool GameObjectN::getActiveUpdate() const
+const bool GameObject::getActiveUpdate() const
 {
 	return m_status & Status::updateActive;
 }
 
-void GameObjectN::setActiveUpdate(bool lb)
+void GameObject::setActiveUpdate(bool lb)
 {
 	if (lb && m_updateIndex == -1)
 	{
@@ -166,17 +166,17 @@ void GameObjectN::setActiveUpdate(bool lb)
 	}
 }
 
-void GameObjectN::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
+void GameObject::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
 {
 	m_texture = texture;
 }
 
-auto GameObjectN::getTexture() const
+auto GameObject::getTexture() const
 {
 	return m_texture;
 }
 
-void GameObjectN::setMeshbuffer(const MeshBuffer& meshBuffer)
+void GameObject::setMeshbuffer(const MeshBuffer& meshBuffer)
 {
 	m_vertexBuffer = meshBuffer.vertexBuffer;
 	m_indexBuffer = meshBuffer.indexBuffer;
@@ -184,16 +184,16 @@ void GameObjectN::setMeshbuffer(const MeshBuffer& meshBuffer)
 	m_vertexStride = meshBuffer.vertexStride;
 }
 
-auto GameObjectN::getMeshBuffer() const
+auto GameObject::getMeshBuffer() const
 {
 	return MeshBuffer{ m_vertexBuffer, m_indexBuffer, m_indexCount };
 }
 
-void GameObjectN::update(float dt)
+void GameObject::update(float dt)
 {
 }
 
-void GameObjectN::draw(ID3D11DeviceContext* pDeviceContext)
+void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
 {
 	// 设置顶点/索引缓冲区
 	UINT strides = m_vertexStride;
@@ -223,7 +223,7 @@ void GameObjectN::draw(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->DrawIndexed(m_indexCount, 0, 0);
 }
 
-void GameObjectN::setDebugObjectName(const std::string& name)
+void GameObject::setDebugObjectName(const std::string& name)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
 	std::string vbName = name + ".VertexBuffer";

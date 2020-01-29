@@ -23,10 +23,10 @@ struct MeshBuffer
 	size_t vertexStride;
 };
 
-class GameObjectN
+class GameObject
 {
 private:
-	static std::vector<GameObjectN*> m_gameObjectList, m_updateList, m_drawList;
+	static std::vector<GameObject*> m_gameObjectList, m_updateList, m_drawList;
 	size_t m_gameObjectIndex, m_updateIndex, m_drawIndex;
 
 protected:
@@ -51,12 +51,12 @@ protected:
 	size_t m_indexCount, m_vertexStride;
 
 	UINT32 m_status;
-	std::vector<GameObjectN*> m_childen;
-	GameObjectN* m_parent;
+	std::vector<GameObject*> m_childen;
+	GameObject* m_parent;
 
 public:
-	GameObjectN();
-	virtual ~GameObjectN();
+	GameObject();
+	virtual ~GameObject();
 
 	static void updateAll(float dt);									// 更新全部
 	static void drawAll(ID3D11DeviceContext* pDeviceContext);			// 绘制全部

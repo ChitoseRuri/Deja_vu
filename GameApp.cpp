@@ -105,7 +105,7 @@ void GameApp::UpdateScene(float dt)
 
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
-	GameObjectN::updateAll(dt);
+	GameObject::updateAll(dt);
 	// 退出程序，这里应向窗口发送销毁信息
 	if (keyState.IsKeyDown(Keyboard::Escape))
 		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
@@ -128,9 +128,6 @@ void GameApp::DrawScene()
 	// 绘制几何模型
 	//
 	m_WoodCrate.draw(m_pd3dImmediateContext.Get());
-	//m_Floor.Draw(m_pd3dImmediateContext.Get());
-	//for (auto& wall : m_Walls)
-	//	wall.Draw(m_pd3dImmediateContext.Get());
 
 	//
 	// 绘制Direct2D部分
@@ -201,34 +198,11 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化游戏对象
 	size_t index;
-	// 初始化木箱
+	// 初始化测试木箱
 	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr);
 	m_WoodCrate.setTexture(m_resourceDepot.getShaderResource(index));
-	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, texture.GetAddressOf()));
 	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
 	m_WoodCrate.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
-	
-	// 初始化地板
-	//index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr);
-	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr, texture.ReleaseAndGetAddressOf()));
-	/*m_Floor.SetBuffer(m_pd3dDevice.Get(),
-		Geometry::CreatePlane(XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2(20.0f, 20.0f), XMFLOAT2(5.0f, 5.0f)));
-	m_Floor.SetTexture(m_resourceDepot.getShaderResource(index).Get());*/
-
-	//// 初始化墙体
-	//m_Walls.resize(4);
-	//index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\brick.dds", nullptr);
-	////HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\brick.dds", nullptr, texture.ReleaseAndGetAddressOf()));
-	//// 这里控制墙体四个面的生成
-	//for (int i = 0; i < 4; ++i)
-	//{
-	//	m_Walls[i].SetBuffer(m_pd3dDevice.Get(),
-	//		Geometry::CreatePlane(XMFLOAT3(), XMFLOAT2(20.0f, 8.0f), XMFLOAT2(5.0f, 1.5f)));
-	//	XMMATRIX world = XMMatrixRotationX(-XM_PIDIV2) * XMMatrixRotationY(XM_PIDIV2 * i)
-	//		* XMMatrixTranslation(i % 2 ? -10.0f * (i - 2) : 0.0f, 3.0f, i % 2 == 0 ? -10.0f * (i - 1) : 0.0f);
-	//	m_Walls[i].SetWorldMatrix(world);
-	//	m_Walls[i].SetTexture(m_resourceDepot.getShaderResource(index).Get());
-	//}
 		
 	// 初始化采样器状态
 	D3D11_SAMPLER_DESC sampDesc;
@@ -246,7 +220,7 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
-	m_pCamera = std::shared_ptr<CameraN>(new CameraN);
+	m_pCamera = std::shared_ptr<Camera>(new Camera);
 	m_pCamera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	m_pCamera->LookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// 初始化仅在窗口大小变动时修改的值
@@ -316,116 +290,7 @@ bool GameApp::InitResource()
 	D3D11SetDebugObjectName(m_pPixelShader2D.Get(), "Basic_PS_2D");
 	D3D11SetDebugObjectName(m_pPixelShader3D.Get(), "Basic_PS_3D");
 	D3D11SetDebugObjectName(m_pSamplerState.Get(), "SSLinearWrap");
-	//m_Floor.SetDebugObjectName("Floor");
 	m_WoodCrate.setDebugObjectName("WoodCrate");
-	/*m_Walls[0].SetDebugObjectName("Walls[0]");
-	m_Walls[1].SetDebugObjectName("Walls[1]");
-	m_Walls[2].SetDebugObjectName("Walls[2]");
-	m_Walls[3].SetDebugObjectName("Walls[3]");*/
-
 
 	return true;
-}
-
-GameApp::GameObject::GameObject()
-	: m_IndexCount(), m_VertexStride()
-{
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
-}
-
-DirectX::XMFLOAT3 GameApp::GameObject::GetPosition() const
-{
-	return XMFLOAT3(m_WorldMatrix(3, 0), m_WorldMatrix(3, 1), m_WorldMatrix(3, 2));
-}
-
-template<class VertexType, class IndexType>
-void GameApp::GameObject::SetBuffer(ID3D11Device * device, const Geometry::MeshData<VertexType, IndexType>& meshData)
-{
-	// 释放旧资源
-	m_pVertexBuffer.Reset();
-	m_pIndexBuffer.Reset();
-
-	// 设置顶点缓冲区描述
-	m_VertexStride = sizeof(VertexType);
-	D3D11_BUFFER_DESC vbd;
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = (UINT)meshData.vertexVec.size() * m_VertexStride;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	// 新建顶点缓冲区
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = meshData.vertexVec.data();
-	HR(device->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
-
-
-	// 设置索引缓冲区描述
-	m_IndexCount = (UINT)meshData.indexVec.size();
-	D3D11_BUFFER_DESC ibd;
-	ZeroMemory(&ibd, sizeof(ibd));
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = m_IndexCount * sizeof(IndexType);
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0;
-	// 新建索引缓冲区
-	InitData.pSysMem = meshData.indexVec.data();
-	HR(device->CreateBuffer(&ibd, &InitData, m_pIndexBuffer.GetAddressOf()));
-}
-
-void GameApp::GameObject::SetTexture(ID3D11ShaderResourceView * texture)
-{
-	m_pTexture = texture;
-}
-
-void GameApp::GameObject::SetWorldMatrix(const XMFLOAT4X4 & world)
-{
-	m_WorldMatrix = world;
-}
-
-void XM_CALLCONV GameApp::GameObject::SetWorldMatrix(FXMMATRIX world)
-{
-	XMStoreFloat4x4(&m_WorldMatrix, world);
-}
-
-void GameApp::GameObject::Draw(ID3D11DeviceContext * deviceContext)
-{
-	// 设置顶点/索引缓冲区
-	UINT strides = m_VertexStride;
-	UINT offsets = 0;
-	deviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &strides, &offsets);
-	deviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-
-	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
-	ComPtr<ID3D11Buffer> cBuffer = nullptr;
-	deviceContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
-	CBWorld cbDrawing;
-
-	// 内部进行转置，这样外部就不需要提前转置了
-	XMMATRIX W = XMLoadFloat4x4(&m_WorldMatrix);
-	cbDrawing.world = XMMatrixTranspose(W);
-	cbDrawing.worldInvTranspose = XMMatrixInverse(nullptr, W);	// 两次转置抵消
-
-	// 更新常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	HR(deviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(CBWorld), &cbDrawing, sizeof(CBWorld));
-	deviceContext->Unmap(cBuffer.Get(), 0);
-
-	// 设置纹理
-	deviceContext->PSSetShaderResources(0, 1, m_pTexture.GetAddressOf());
-	// 可以开始绘制
-	deviceContext->DrawIndexed(m_IndexCount, 0, 0);
-}
-
-void GameApp::GameObject::SetDebugObjectName(const std::string& name)
-{
-#if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
-	std::string vbName = name + ".VertexBuffer";
-	std::string ibName = name + ".IndexBuffer";
-	m_pVertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(vbName.length()), vbName.c_str());
-	m_pIndexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(ibName.length()), ibName.c_str());
-#else
-	UNREFERENCED_PARAMETER(name);
-#endif
 }

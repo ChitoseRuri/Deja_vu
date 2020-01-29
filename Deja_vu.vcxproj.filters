@@ -15,9 +15,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="d3dApp.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -51,20 +48,17 @@
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="CameraN.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="ResourceDepot.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
-      <Filter>Head</Filter>
-    </ClInclude>
     <ClInclude Include="d3dApp.h">
       <Filter>Head</Filter>
     </ClInclude>
@@ -107,7 +101,7 @@
     <ClInclude Include="ResourceDepot.h">
       <Filter>Head</Filter>
     </ClInclude>
-    <ClInclude Include="CameraN.h">
+    <ClInclude Include="Camera.h">
       <Filter>Head</Filter>
     </ClInclude>
   </ItemGroup>
