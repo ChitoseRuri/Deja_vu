@@ -127,7 +127,7 @@ void GameApp::DrawScene()
 	//
 	// 绘制几何模型
 	//
-	m_WoodCrate.Draw(m_pd3dImmediateContext.Get());
+	m_WoodCrate.draw(m_pd3dImmediateContext.Get());
 	//m_Floor.Draw(m_pd3dImmediateContext.Get());
 	//for (auto& wall : m_Walls)
 	//	wall.Draw(m_pd3dImmediateContext.Get());
@@ -203,12 +203,13 @@ bool GameApp::InitResource()
 	size_t index;
 	// 初始化木箱
 	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr);
+	m_WoodCrate.setTexture(m_resourceDepot.getShaderResource(index));
 	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, texture.GetAddressOf()));
-	m_WoodCrate.SetBuffer(m_pd3dDevice.Get(), Geometry::CreateBox());
-	m_WoodCrate.SetTexture(m_resourceDepot.getShaderResource(index).Get());
+	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
+	m_WoodCrate.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
 	
 	// 初始化地板
-	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr);
+	//index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr);
 	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\floor.dds", nullptr, texture.ReleaseAndGetAddressOf()));
 	/*m_Floor.SetBuffer(m_pd3dDevice.Get(),
 		Geometry::CreatePlane(XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2(20.0f, 20.0f), XMFLOAT2(5.0f, 5.0f)));
@@ -316,7 +317,7 @@ bool GameApp::InitResource()
 	D3D11SetDebugObjectName(m_pPixelShader3D.Get(), "Basic_PS_3D");
 	D3D11SetDebugObjectName(m_pSamplerState.Get(), "SSLinearWrap");
 	//m_Floor.SetDebugObjectName("Floor");
-	m_WoodCrate.SetDebugObjectName("WoodCrate");
+	m_WoodCrate.setDebugObjectName("WoodCrate");
 	/*m_Walls[0].SetDebugObjectName("Walls[0]");
 	m_Walls[1].SetDebugObjectName("Walls[1]");
 	m_Walls[2].SetDebugObjectName("Walls[2]");

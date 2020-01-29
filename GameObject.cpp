@@ -11,6 +11,8 @@ GameObjectN::GameObjectN() :
 	m_drawIndex(-1),
 	m_updateIndex(-1)
 {
+	XMStoreFloat4x4(&m_localMatrix, XMMatrixIdentity());
+
 	size_t index = -1;
 	size_t count = m_gameObjectList.size();
 	for (size_t i = 0; i < count; ++i)
@@ -164,10 +166,71 @@ void GameObjectN::setActiveUpdate(bool lb)
 	}
 }
 
+void GameObjectN::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
+{
+	m_texture = texture;
+}
+
+auto GameObjectN::getTexture() const
+{
+	return m_texture;
+}
+
+void GameObjectN::setMeshbuffer(const MeshBuffer& meshBuffer)
+{
+	m_vertexBuffer = meshBuffer.vertexBuffer;
+	m_indexBuffer = meshBuffer.indexBuffer;
+	m_indexCount = meshBuffer.count;
+	m_vertexStride = meshBuffer.vertexStride;
+}
+
+auto GameObjectN::getMeshBuffer() const
+{
+	return MeshBuffer{ m_vertexBuffer, m_indexBuffer, m_indexCount };
+}
+
 void GameObjectN::update(float dt)
 {
 }
 
 void GameObjectN::draw(ID3D11DeviceContext* pDeviceContext)
 {
+	// 设置顶点/索引缓冲区
+	UINT strides = m_vertexStride;
+	UINT offsets = 0;
+	pDeviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &strides, &offsets);
+	pDeviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
+	ComPtr<ID3D11Buffer> cBuffer = nullptr;
+	pDeviceContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
+	CBWorld cbDrawing;
+
+	// 内部进行转置，这样外部就不需要提前转置了
+	XMMATRIX W = XMLoadFloat4x4(&m_localMatrix);
+	cbDrawing.world = XMMatrixTranspose(W);
+	cbDrawing.worldInvTranspose = XMMatrixInverse(nullptr, W);	// 两次转置抵消
+
+	// 更新常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HR(pDeviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(CBWorld), &cbDrawing, sizeof(CBWorld));
+	pDeviceContext->Unmap(cBuffer.Get(), 0);
+
+	// 设置纹理
+	pDeviceContext->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
+	// 可以开始绘制
+	pDeviceContext->DrawIndexed(m_indexCount, 0, 0);
+}
+
+void GameObjectN::setDebugObjectName(const std::string& name)
+{
+#if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
+	std::string vbName = name + ".VertexBuffer";
+	std::string ibName = name + ".IndexBuffer";
+	m_vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(vbName.length()), vbName.c_str());
+	m_indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(ibName.length()), ibName.c_str());
+#else
+	UNREFERENCED_PARAMETER(name);
+#endif
 }

@@ -1,5 +1,7 @@
 #pragma once
 #include "d3dApp.h"
+#include "d3dUtil.h"
+#include"DXTrace.h"
 #include <vector>
 
 using namespace DirectX;
@@ -7,11 +9,18 @@ using namespace DirectX;
 template <class T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+struct CBWorld
+{
+	XMMATRIX world;
+	XMMATRIX worldInvTranspose;
+};
+
 struct MeshBuffer
 {
 	ComPtr<ID3D11Buffer> vertexBuffer;
 	ComPtr<ID3D11Buffer> indexBuffer;
 	size_t count;
+	size_t vertexStride;
 };
 
 class GameObjectN
@@ -39,7 +48,7 @@ protected:
 	ComPtr<ID3D11ShaderResourceView> m_texture;
 	ComPtr<ID3D11Buffer> m_vertexBuffer;
 	ComPtr<ID3D11Buffer> m_indexBuffer;
-	size_t m_indexCount;
+	size_t m_indexCount, m_vertexStride;
 
 	UINT32 m_status;
 	std::vector<GameObjectN*> m_childen;
@@ -70,8 +79,17 @@ public:
 	const bool getActiveUpdate() const;
 	void setActiveUpdate(bool lb);
 
+	void setTexture(ComPtr<ID3D11ShaderResourceView> texture);
+	auto getTexture() const;
+
+	void setMeshbuffer(const MeshBuffer& meshBuffer);
+	auto getMeshBuffer() const;
+
 	virtual void update(float dt);
 	virtual void draw(ID3D11DeviceContext* pDeviceContext);
 
+	// 设置调试对象名
+// 若缓冲区被重新设置，调试对象名也需要被重新设置
+	void setDebugObjectName(const std::string& name);
 };
 

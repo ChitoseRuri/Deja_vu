@@ -20,13 +20,13 @@ ComPtr<ID3D11ShaderResourceView> ResourceDepot::getShaderResource(const wchar_t*
 
 MeshBuffer ResourceDepot::getMeshBuffer(size_t index) const
 {
-	return MeshBuffer{ m_vertexBuffer[index], m_indexBuffer[index], m_vertexIndexCount[index] };
+	return MeshBuffer{ m_vertexBuffer[index], m_indexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
 }
 
 MeshBuffer ResourceDepot::getMeshBuffer(const wchar_t* name) const
 {
 	size_t index = m_meshMap.find(name)->second;
-	return MeshBuffer{ m_vertexBuffer[index], m_indexBuffer[index], m_vertexIndexCount[index] };
+	return MeshBuffer{ m_vertexBuffer[index], m_indexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
 }
 
 size_t ResourceDepot::loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, const wchar_t* name)

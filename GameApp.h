@@ -12,12 +12,6 @@ class GameApp : public D3DApp
 {
 public:
 
-	struct CBWorld
-	{
-		DirectX::XMMATRIX world;
-		DirectX::XMMATRIX worldInvTranspose;
-	};
-
 	struct CBCamera
 	{
 		DirectX::XMMATRIX view;
@@ -96,7 +90,7 @@ private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout3D;				// 用于3D的顶点输入布局
 	ComPtr<ID3D11Buffer> m_pConstantBuffers[4];				    // 常量缓冲区
 
-	GameObject m_WoodCrate;									    // 木盒
+	GameObjectN m_WoodCrate;									    // 木盒
 	//GameObject m_Floor;										    // 地板
 	//std::vector<GameObject> m_Walls;							// 墙壁
 

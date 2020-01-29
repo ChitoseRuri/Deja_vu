@@ -13,7 +13,7 @@ private:
 	std::map<std::wstring, size_t> m_shaderResourceMap;
 
 	std::vector<ComPtr<ID3D11Buffer>> m_vertexBuffer, m_indexBuffer;
-	std::vector<size_t> m_vertexIndexCount;
+	std::vector<size_t> m_vertexIndexCount, m_vertexStride;
 	std::map<std::wstring, size_t> m_meshMap;
 
 protected:
@@ -66,6 +66,8 @@ inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry:
 	size_t index = m_vertexBuffer.size();
 	m_vertexBuffer.push_back(vertexBuffer);
 	m_indexBuffer.push_back(indexBuffer);
+	m_vertexIndexCount.push_back(indexCount);
+	m_vertexStride.push_back(vertexStride);
 	if (name != nullptr)
 	{
 		m_meshMap.insert(std::make_pair(name, index));
