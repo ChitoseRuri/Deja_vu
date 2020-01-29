@@ -5,6 +5,7 @@
 #include "Geometry.h"
 #include "LightHelper.h"
 #include "Camera.h"
+#include "CameraN.h"
 
 class GameApp : public D3DApp
 {
@@ -112,7 +113,7 @@ private:
 
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
-	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
+	std::shared_ptr<CameraN> m_pCamera;						    // 摄像机
 	CameraMode m_CameraMode;									// 摄像机模式
 
 };

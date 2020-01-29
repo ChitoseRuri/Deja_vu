@@ -101,115 +101,115 @@ void GameApp::UpdateScene(float dt)
 	m_KeyboardTracker.Update(keyState);
 
 	// 获取子类
-	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
-	auto cam3rd = std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
+	auto cam1st = m_pCamera;// std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
+	auto cam3rd = m_pCamera;// std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
 
 	
-	if (m_CameraMode == CameraMode::FirstPerson || m_CameraMode == CameraMode::Free)
-	{
-		// 第一人称/自由摄像机的操作
+	//if (m_CameraMode == CameraMode::FirstPerson || m_CameraMode == CameraMode::Free)
+	//{
+	//	// 第一人称/自由摄像机的操作
 
-		// 方向移动
-		if (keyState.IsKeyDown(Keyboard::W))
-		{
-			if (m_CameraMode == CameraMode::FirstPerson)
-				cam1st->Walk(dt * 3.0f);
-			else
-				cam1st->MoveForward(dt * 3.0f);
-		}	
-		if (keyState.IsKeyDown(Keyboard::S))
-		{
-			if (m_CameraMode == CameraMode::FirstPerson)
-				cam1st->Walk(dt * -3.0f);
-			else
-				cam1st->MoveForward(dt * -3.0f);
-		}
-		if (keyState.IsKeyDown(Keyboard::A))
-			cam1st->Strafe(dt * -3.0f);
-		if (keyState.IsKeyDown(Keyboard::D))
-			cam1st->Strafe(dt * 3.0f);
+	//	// 方向移动
+	//	if (keyState.IsKeyDown(Keyboard::W))
+	//	{
+	//		if (m_CameraMode == CameraMode::FirstPerson)
+	//			cam1st->Walk(dt * 3.0f);
+	//		else
+	//			cam1st->MoveForward(dt * 3.0f);
+	//	}	
+	//	if (keyState.IsKeyDown(Keyboard::S))
+	//	{
+	//		if (m_CameraMode == CameraMode::FirstPerson)
+	//			cam1st->Walk(dt * -3.0f);
+	//		else
+	//			cam1st->MoveForward(dt * -3.0f);
+	//	}
+	//	if (keyState.IsKeyDown(Keyboard::A))
+	//		cam1st->Strafe(dt * -3.0f);
+	//	if (keyState.IsKeyDown(Keyboard::D))
+	//		cam1st->Strafe(dt * 3.0f);
 
-		// 将位置限制在[-8.9f, 8.9f]的区域内
-		// 不允许穿地
-		XMFLOAT3 adjustedPos;
-		XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(), XMVectorSet(-8.9f, 0.0f, -8.9f, 0.0f), XMVectorReplicate(8.9f)));
-		cam1st->SetPosition(adjustedPos);
+	//	// 将位置限制在[-8.9f, 8.9f]的区域内
+	//	// 不允许穿地
+	//	XMFLOAT3 adjustedPos;
+	//	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(), XMVectorSet(-8.9f, 0.0f, -8.9f, 0.0f), XMVectorReplicate(8.9f)));
+	//	cam1st->SetPosition(adjustedPos);
 
-		// 仅在第一人称模式移动箱子
-		if (m_CameraMode == CameraMode::FirstPerson)
-			m_WoodCrate.SetWorldMatrix(XMMatrixTranslation(adjustedPos.x, adjustedPos.y, adjustedPos.z));
-		// 视野旋转，防止开始的差值过大导致的突然旋转
-		cam1st->Pitch(mouseState.y * dt * 1.25f);
-		cam1st->RotateY(mouseState.x * dt * 1.25f);
-	}
-	else if (m_CameraMode == CameraMode::ThirdPerson)
-	{
-		// 第三人称摄像机的操作
+	//	// 仅在第一人称模式移动箱子
+	//	if (m_CameraMode == CameraMode::FirstPerson)
+	//		m_WoodCrate.SetWorldMatrix(XMMatrixTranslation(adjustedPos.x, adjustedPos.y, adjustedPos.z));
+	//	// 视野旋转，防止开始的差值过大导致的突然旋转
+	//	cam1st->Pitch(mouseState.y * dt * 1.25f);
+	//	cam1st->RotateY(mouseState.x * dt * 1.25f);
+	//}
+	//else if (m_CameraMode == CameraMode::ThirdPerson)
+	//{
+	//	// 第三人称摄像机的操作
 
-		cam3rd->SetTarget(m_WoodCrate.GetPosition());
+	//	cam3rd->SetTarget(m_WoodCrate.GetPosition());
 
-		// 绕物体旋转
-		cam3rd->RotateX(mouseState.y * dt * 1.25f);
-		cam3rd->RotateY(mouseState.x * dt * 1.25f);
-		cam3rd->Approach(-mouseState.scrollWheelValue / 120 * 1.0f);
-	}
+	//	// 绕物体旋转
+	//	cam3rd->RotateX(mouseState.y * dt * 1.25f);
+	//	cam3rd->RotateY(mouseState.x * dt * 1.25f);
+	//	cam3rd->Approach(-mouseState.scrollWheelValue / 120 * 1.0f);
+	//}
 
 	// 更新观察矩阵
-	m_pCamera->UpdateViewMatrix();
-	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->GetPositionXM());
+	m_pCamera->update(0);
+	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->GetViewXM());
 
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
 	
 	// 摄像机模式切换
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::D1) && m_CameraMode != CameraMode::FirstPerson)
-	{
-		if (!cam1st)
-		{
-			cam1st.reset(new FirstPersonCamera);
-			cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-			m_pCamera = cam1st;
-		}
+	//if (m_KeyboardTracker.IsKeyPressed(Keyboard::D1) && m_CameraMode != CameraMode::FirstPerson)
+	//{
+	//	if (!cam1st)
+	//	{
+	//		cam1st.reset(new FirstPersonCamera);
+	//		cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+	//		m_pCamera = cam1st;
+	//	}
 
-		cam1st->LookTo(m_WoodCrate.GetPosition(),
-			XMFLOAT3(0.0f, 0.0f, 1.0f),
-			XMFLOAT3(0.0f, 1.0f, 0.0f));
-		
-		m_CameraMode = CameraMode::FirstPerson;
-	}
-	else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D2) && m_CameraMode != CameraMode::ThirdPerson)
-	{
-		if (!cam3rd)
-		{
-			cam3rd.reset(new ThirdPersonCamera);
-			cam3rd->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-			m_pCamera = cam3rd;
-		}
-		XMFLOAT3 target = m_WoodCrate.GetPosition();
-		cam3rd->SetTarget(target);
-		cam3rd->SetDistance(8.0f);
-		cam3rd->SetDistanceMinMax(3.0f, 20.0f);
-		
-		m_CameraMode = CameraMode::ThirdPerson;
-	}
-	else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D3) && m_CameraMode != CameraMode::Free)
-	{
-		if (!cam1st)
-		{
-			cam1st.reset(new FirstPersonCamera);
-			cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-			m_pCamera = cam1st;
-		}
-		// 从箱子上方开始
-		XMFLOAT3 pos = m_WoodCrate.GetPosition();
-		XMFLOAT3 to = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		pos.y += 3;
-		cam1st->LookTo(pos, to, up);
+	//	cam1st->LookTo(m_WoodCrate.GetPosition(),
+	//		XMFLOAT3(0.0f, 0.0f, 1.0f),
+	//		XMFLOAT3(0.0f, 1.0f, 0.0f));
+	//	
+	//	m_CameraMode = CameraMode::FirstPerson;
+	//}
+	//else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D2) && m_CameraMode != CameraMode::ThirdPerson)
+	//{
+	//	if (!cam3rd)
+	//	{
+	//		cam3rd.reset(new ThirdPersonCamera);
+	//		cam3rd->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+	//		m_pCamera = cam3rd;
+	//	}
+	//	XMFLOAT3 target = m_WoodCrate.GetPosition();
+	//	cam3rd->SetTarget(target);
+	//	cam3rd->SetDistance(8.0f);
+	//	cam3rd->SetDistanceMinMax(3.0f, 20.0f);
+	//	
+	//	m_CameraMode = CameraMode::ThirdPerson;
+	//}
+	//else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D3) && m_CameraMode != CameraMode::Free)
+	//{
+	//	if (!cam1st)
+	//	{
+	//		cam1st.reset(new FirstPersonCamera);
+	//		cam1st->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+	//		m_pCamera = cam1st;
+	//	}
+	//	// 从箱子上方开始
+	//	XMFLOAT3 pos = m_WoodCrate.GetPosition();
+	//	XMFLOAT3 to = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	//	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	//	pos.y += 3;
+	//	cam1st->LookTo(pos, to, up);
 
-		m_CameraMode = CameraMode::Free;
-	}
+	//	m_CameraMode = CameraMode::Free;
+	//}
 	// 退出程序，这里应向窗口发送销毁信息
 	if (keyState.IsKeyDown(Keyboard::Escape))
 		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
@@ -353,10 +353,10 @@ bool GameApp::InitResource()
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
 	m_CameraMode = CameraMode::FirstPerson;
-	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
-	m_pCamera = camera;
-	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	camera->LookAt(XMFLOAT3(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	//auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
+	m_pCamera = std::shared_ptr<CameraN>(new CameraN);
+	m_pCamera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+	m_pCamera->LookAt(XMFLOAT3(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 
 	// 初始化仅在窗口大小变动时修改的值
 	m_pCamera->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
