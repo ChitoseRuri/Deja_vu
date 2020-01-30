@@ -103,6 +103,8 @@ void GameApp::UpdateScene(float dt)
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->GetViewXM());
 
+	GameObject::updateAll(dt);
+
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
 	GameObject::updateAll(dt);
@@ -203,6 +205,9 @@ bool GameApp::InitResource()
 	m_WoodCrate.setTexture(m_resourceDepot.getShaderResource(index));
 	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
 	m_WoodCrate.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
+	m_WoodCrate.setLocation(0.0f, 1.0f, 0.0f);
+	//m_WoodCrate.setRotation(0.f, 0.f, 45.f);
+	//m_WoodCrate.setScale(0.5f, 0.5f, 0.5f);
 		
 	// 初始化采样器状态
 	D3D11_SAMPLER_DESC sampDesc;

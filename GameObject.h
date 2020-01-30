@@ -38,19 +38,20 @@ protected:
 		statical = 1 << 3
 	};
 
+	// P后缀的为亲节点变化的集合
 
+	XMFLOAT3 m_location, m_locationP;
+	XMFLOAT3 m_scale, m_scaleP;
+	XMFLOAT3 m_rotation, m_rotationP;
 
-	XMFLOAT3 m_location;
-	XMFLOAT3 m_scale;
-	XMFLOAT3 m_rotation;
-
-	XMFLOAT4X4 m_localMatrix;
+	XMMATRIX m_localMatrix;
 	ComPtr<ID3D11ShaderResourceView> m_texture;
 	ComPtr<ID3D11Buffer> m_vertexBuffer;
 	ComPtr<ID3D11Buffer> m_indexBuffer;
 	size_t m_indexCount, m_vertexStride;
 
 	UINT32 m_status;
+	bool m_isMoved;
 	std::vector<GameObject*> m_childen;
 	GameObject* m_parent;
 
@@ -62,16 +63,16 @@ public:
 	static void drawAll(ID3D11DeviceContext* pDeviceContext);			// 绘制全部
 
 	const XMFLOAT3& getLocation() const;
-	virtual void setLocation(float x, float y, float z);
-	virtual void setLocation(const XMFLOAT3& location);
+	void setLocation(float x, float y, float z);
+	void setLocation(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
-	virtual void setScale(float x, float y, float z);
-	virtual void setScale(const XMFLOAT3& scale);
+	void setScale(float x, float y, float z);
+	void setScale(const XMFLOAT3& scale);
 
 	const XMFLOAT3& getRotation() const;
-	virtual void setRotation(float x, float y, float z);
-	virtual void setRotation(const XMFLOAT3& rotation);
+	void setRotation(float x, float y, float z);
+	void setRotation(const XMFLOAT3& rotation);
 
 	const bool getVisable() const;
 	void setVisable(bool lb);
@@ -91,5 +92,11 @@ public:
 	// 设置调试对象名
 // 若缓冲区被重新设置，调试对象名也需要被重新设置
 	void setDebugObjectName(const std::string& name);
+
+private:
+	void updateLocalMatrix();
+	void setLocationP(const XMFLOAT3& location);
+	void setScaleP(const XMFLOAT3& scale);
+	void setRotationP(const XMFLOAT3& rotation);
 };
 
