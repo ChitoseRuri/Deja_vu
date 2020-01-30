@@ -57,7 +57,7 @@ private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout3D;				// 用于3D的顶点输入布局
 	ComPtr<ID3D11Buffer> m_pConstantBuffers[4];				    // 常量缓冲区
 
-	GameObject m_WoodCrate;									    // 木盒
+	GameObject m_WoodCrate1, m_WoodCrate2;						// 木盒
 
 	ComPtr<ID3D11VertexShader> m_pVertexShader3D;				// 用于3D的顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader3D;				    // 用于3D的像素着色器

@@ -129,7 +129,7 @@ void GameApp::DrawScene()
 	//
 	// 绘制几何模型
 	//
-	m_WoodCrate.draw(m_pd3dImmediateContext.Get());
+	GameObject::drawAll(m_pd3dImmediateContext.Get());
 
 	//
 	// 绘制Direct2D部分
@@ -202,11 +202,17 @@ bool GameApp::InitResource()
 	size_t index;
 	// 初始化测试木箱
 	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr);
-	m_WoodCrate.setTexture(m_resourceDepot.getShaderResource(index));
+	m_WoodCrate1.setTexture(m_resourceDepot.getShaderResource(index));
+	m_WoodCrate2.setTexture(m_resourceDepot.getShaderResource(index));
 	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
-	m_WoodCrate.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
-	m_WoodCrate.setLocation(0.0f, 1.0f, 0.0f);
-	//m_WoodCrate.setRotation(0.f, 0.f, 45.f);
+	m_WoodCrate1.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
+	m_WoodCrate2.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
+	m_WoodCrate1.setLocation(0.0f, 1.0f, 0.0f);
+	m_WoodCrate1.addChild(&m_WoodCrate2);
+	m_WoodCrate2.setScale(0.5f, 0.5f, 0.5f);
+	m_WoodCrate2.setLocation(-1.0f, -1.0f, 0.0f);
+	m_WoodCrate1.setRotation(0.f, 0.f, 45.f);
+	m_WoodCrate2.setRotation(0.f, 0.f, 45.f);
 	//m_WoodCrate.setScale(0.5f, 0.5f, 0.5f);
 		
 	// 初始化采样器状态
@@ -295,7 +301,7 @@ bool GameApp::InitResource()
 	D3D11SetDebugObjectName(m_pPixelShader2D.Get(), "Basic_PS_2D");
 	D3D11SetDebugObjectName(m_pPixelShader3D.Get(), "Basic_PS_3D");
 	D3D11SetDebugObjectName(m_pSamplerState.Get(), "SSLinearWrap");
-	m_WoodCrate.setDebugObjectName("WoodCrate");
+	m_WoodCrate1.setDebugObjectName("WoodCrate");
 
 	return true;
 }

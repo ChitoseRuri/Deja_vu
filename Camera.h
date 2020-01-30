@@ -25,7 +25,7 @@ protected:
 	// 当前视口
 	D3D11_VIEWPORT m_ViewPort;
 
-	char pad[14];//打包对齐16
+	//char pad[14];//打包对齐16
 
 public:
 	Camera();

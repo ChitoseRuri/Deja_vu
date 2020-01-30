@@ -3,6 +3,7 @@
 #include "d3dUtil.h"
 #include"DXTrace.h"
 #include <vector>
+#include <assert.h>
 
 using namespace DirectX;
 
@@ -38,6 +39,12 @@ protected:
 		statical = 1 << 3
 	};
 
+	enum Trans
+	{
+		scale_t,
+		rotate_t,
+		locate_t
+	};
 	// P后缀的为亲节点变化的集合
 
 	XMFLOAT3 m_location, m_locationP;
@@ -51,7 +58,7 @@ protected:
 	size_t m_indexCount, m_vertexStride;
 
 	UINT32 m_status;
-	bool m_isMoved;
+	UINT32 m_isTrans;
 	std::vector<GameObject*> m_childen;
 	GameObject* m_parent;
 
@@ -67,8 +74,8 @@ public:
 	void setLocation(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
-	void setScale(float x, float y, float z);
-	void setScale(const XMFLOAT3& scale);
+	void setScale(float x, float y, float z);// 角度
+	void setScale(const XMFLOAT3& scale);// 角度
 
 	const XMFLOAT3& getRotation() const;
 	void setRotation(float x, float y, float z);
@@ -86,9 +93,13 @@ public:
 	void setMeshbuffer(const MeshBuffer& meshBuffer);
 	auto getMeshBuffer() const;
 
-	virtual void update(float dt);
+	virtual void update(float dt);// 更新，亲节点负责更新子节点
 	virtual void draw(ID3D11DeviceContext* pDeviceContext);
 
+	void setParent(GameObject* parent);
+	GameObject* getParent()const;
+	void addChild(GameObject* child);
+	void delChild(GameObject* child);
 	// 设置调试对象名
 // 若缓冲区被重新设置，调试对象名也需要被重新设置
 	void setDebugObjectName(const std::string& name);
@@ -98,5 +109,7 @@ private:
 	void setLocationP(const XMFLOAT3& location);
 	void setScaleP(const XMFLOAT3& scale);
 	void setRotationP(const XMFLOAT3& rotation);
-};
 
+	void setParentPassive(GameObject* parent);
+	void addChildPassive(GameObject* child);
+};

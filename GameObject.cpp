@@ -2,6 +2,28 @@
 
 std::vector<GameObject*> GameObject::m_gameObjectList, GameObject::m_updateList, GameObject::m_drawList;
 
+constexpr float toRadian(float angle)
+{
+	return angle * 0.017453f;
+}
+
+constexpr float toAngle(float radian)
+{
+	return radian * 57.29578f;
+}
+
+// 向量相加
+XMFLOAT3 operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
+{
+	return { lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z };
+}
+
+// 向量点乘
+XMFLOAT3 operator*(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
+{
+	return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
+}
+
 GameObject::GameObject() :
 	m_parent(nullptr),
 	m_location(.0f, .0f, .0f),
@@ -11,7 +33,7 @@ GameObject::GameObject() :
 	m_scaleP(1.0f, 1.0f, 1.0f),
 	m_rotationP(.0f, .0f, .0f),
 	m_status(NULL),// 不依靠初始化列表，需要用函数初始化状态
-	m_isMoved(false),
+	m_isTrans(NULL),
 	m_drawIndex(-1),
 	m_updateIndex(-1),
 	m_localMatrix(XMMatrixIdentity())
@@ -55,7 +77,10 @@ void GameObject::drawAll(ID3D11DeviceContext* pDeviceContext)
 {
 	for (auto p : m_drawList)
 	{
-		p->draw(pDeviceContext);
+		if (p)
+		{
+			p->draw(pDeviceContext);
+		}
 	}
 }
 
@@ -67,23 +92,13 @@ const XMFLOAT3& GameObject::getLocation() const
 void GameObject::setLocation(float x, float y, float z)
 {
 	m_location = { x, y, z };
-	XMFLOAT3 ls = { m_locationP.x + m_location.x,m_locationP.y + m_location.y, m_locationP.z + m_location.z };
-	for (auto child : m_childen)
-	{
-		setLocationP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::locate_t;
 }
 
 void GameObject::setLocation(const XMFLOAT3& location)
 {
 	m_location = location;
-	XMFLOAT3 ls = { m_locationP.x + m_location.x,m_locationP.y + m_location.y, m_locationP.z + m_location.z };
-	for (auto child : m_childen)
-	{
-		setLocationP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::locate_t;
 }
 
 const XMFLOAT3& GameObject::getScale() const
@@ -94,23 +109,13 @@ const XMFLOAT3& GameObject::getScale() const
 void GameObject::setScale(float x, float y, float z)
 {
 	m_scale = { x, y, z };
-	XMFLOAT3 ls = { m_scaleP.x * m_scale.x,m_scaleP.y * m_scale.y,m_scaleP.z * m_scale.z };
-	for (auto child : m_childen)
-	{
-		setScaleP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::scale_t;
 }
 
 void GameObject::setScale(const XMFLOAT3& scale)
 {
 	m_scale = scale;
-	XMFLOAT3 ls = { m_scaleP.x * m_scale.x,m_scaleP.y * m_scale.y,m_scaleP.z * m_scale.z };
-	for (auto child : m_childen)
-	{
-		setScaleP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::scale_t;
 }
 
 const XMFLOAT3& GameObject::getRotation() const
@@ -121,18 +126,13 @@ const XMFLOAT3& GameObject::getRotation() const
 void GameObject::setRotation(float x, float y, float z)
 {
 	m_rotation = { x, y, z };
-	XMFLOAT3 ls = { m_rotationP.x + m_rotation.x,m_rotationP.y + m_rotation.y,m_rotationP.z + m_rotation.z };
-	for (auto child : m_childen)
-	{
-		setRotationP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::rotate_t;
 }
 
 void GameObject::setRotation(const XMFLOAT3& rotation)
 {
 	m_rotation = rotation;
-	m_isMoved = true;
+	m_isTrans |= Trans::rotate_t;
 }
 
 const bool GameObject::getVisable() const
@@ -229,6 +229,10 @@ auto GameObject::getMeshBuffer() const
 void GameObject::update(float dt)
 {
 	updateLocalMatrix();
+	for (auto child : m_childen)
+	{
+		child->update(dt);
+	}
 }
 
 void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
@@ -260,7 +264,57 @@ void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->DrawIndexed(m_indexCount, 0, 0);
 }
 
+void GameObject::setParent(GameObject* parent)
+{
+	if (parent == m_parent)
+	{
+		return;
+	}
 
+	if (parent == nullptr)//亲节点为空，自己主动更新
+	{
+		m_parent = parent;
+		setActiveUpdate(true);
+		m_scaleP = { 1.0f,1.0f,1.0f };
+		m_rotation = { 0.0f,0.0f,0.0f };
+		m_locationP = { 0.0f, 0.0f, 0.0f };
+		m_isTrans = UINT32_MAX;
+	}
+	else
+	{
+		parent->addChildPassive(this);
+		m_parent = parent;
+		setActiveUpdate(false);// 关掉主动更新，改为亲节点更新
+	}
+}
+
+GameObject* GameObject::getParent() const
+{
+	return m_parent;
+}
+
+void GameObject::addChild(GameObject* child)
+{
+	addChildPassive(child);
+	child->setActiveUpdate(false);
+	child->setParentPassive(this);
+}
+
+void GameObject::delChild(GameObject* child)
+{
+	size_t size = m_childen.size();
+	for (size_t index = 0; index < size; ++index)
+	{
+		if (m_childen[index] == child)
+		{
+			m_childen.erase(m_childen.begin() + index);
+			child->setParent(nullptr);
+			child->setActiveUpdate(true);
+			return;
+		}
+	}
+	assert(true);
+}
 
 void GameObject::setDebugObjectName(const std::string& name)
 {
@@ -276,13 +330,13 @@ void GameObject::setDebugObjectName(const std::string& name)
 
 void GameObject::updateLocalMatrix()
 {
-	if (!m_isMoved)
+	if (!m_isTrans)
 	{
 		return;
 	}
-	XMFLOAT3 scale = { m_scale.x * m_scaleP.x, m_scale.y * m_scaleP.y, m_scale.z * m_scaleP.z };
-	XMFLOAT3 rotation = { m_rotation.x + m_rotationP.x, m_rotation.y + m_rotationP.y, m_rotation.z + m_rotationP.z };
-	XMFLOAT3 location = { m_location.x + m_locationP.x, m_location.y + m_locationP.y, m_location.z + m_locationP.z };
+	XMFLOAT3 scale = m_scale * m_scaleP;
+	XMFLOAT3 rotation = m_rotation + m_rotationP;
+	XMFLOAT3 location = m_location + m_locationP;
 	XMFLOAT4X4 scaleF4 = {
 		scale.x, 0, 0, 0,
 		0, scale.y, 0, 0,
@@ -290,7 +344,7 @@ void GameObject::updateLocalMatrix()
 		0,0,0,1
 	};
 	XMMATRIX scaleMatrix = XMLoadFloat4x4(&scaleF4);
-	XMMATRIX rotationMatrix = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);
+	XMMATRIX rotationMatrix = XMMatrixRotationX(toRadian(rotation.x)) * XMMatrixRotationY(toRadian(rotation.y)) * XMMatrixRotationZ(toRadian(rotation.z));
 	XMFLOAT4X4 locationF4 = {
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -299,37 +353,63 @@ void GameObject::updateLocalMatrix()
 	};
 	XMMATRIX locationMatrix = XMLoadFloat4x4(&locationF4);
 	m_localMatrix = scaleMatrix * rotationMatrix * locationMatrix;
+	// 根据更新总量更新子节点
+	if (m_isTrans | Trans::scale_t)
+	{
+		for (auto child : m_childen)
+		{
+			child->setScaleP(scale);
+		}
+	}
+	if (m_isTrans | Trans::rotate_t)
+	{
+		for (auto child : m_childen)
+		{
+			child->setRotationP(rotation);
+		}
+	}
+	if (m_isTrans | Trans::locate_t)
+	{
+		for (auto child : m_childen)
+		{
+			child->setLocationP(location);
+		}
+	}
+	m_isTrans = NULL;// 重置修改判断符
 }
 
 void GameObject::setLocationP(const XMFLOAT3& location)
 {
 	m_locationP = location;
-	XMFLOAT3 ls = { location.x + m_location.x,location.y + m_location.y,location.z + m_location.z };
-	for (auto child : m_childen)
-	{
-		setLocationP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::locate_t;
 }
 
 void GameObject::setScaleP(const XMFLOAT3& scale)
 {
 	m_scaleP = scale;
-	XMFLOAT3 ls = { scale.x * m_scale.x,scale.y * m_scale.y,scale.z * m_scale.z };
-	for (auto child : m_childen)
-	{
-		setScaleP(ls);
-	}
-	m_isMoved = true;
+	m_isTrans |= Trans::scale_t;
 }
 
 void GameObject::setRotationP(const XMFLOAT3& rotation)
 {
 	m_rotationP = rotation;
-	XMFLOAT3 ls = { rotation.x + m_rotation.x,rotation.y + m_rotation.y,rotation.z + m_rotation.z };
-	for (auto child : m_childen)
+	m_isTrans |= rotate_t;
+}
+
+void GameObject::setParentPassive(GameObject* parent)
+{
+	m_parent = parent;
+}
+
+void GameObject::addChildPassive(GameObject* child)
+{
+	if (child->getParent() == this)
 	{
-		setRotationP(ls);
+		return;
 	}
-	m_isMoved = true;
+
+	m_childen.push_back(child);
+	child->setScaleP(m_scale * m_scaleP);
+	child->setRotationP(m_rotation * m_rotationP);
+	child->setLocationP(m_location + m_locationP);
 }
