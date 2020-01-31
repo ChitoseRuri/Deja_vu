@@ -201,7 +201,7 @@ bool GameApp::InitResource()
 	// 初始化游戏对象
 	size_t index;
 	// 初始化测试木箱
-	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr);
+	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds");
 	m_WoodCrate1.setTexture(m_resourceDepot.getShaderResource(index));
 	m_WoodCrate2.setTexture(m_resourceDepot.getShaderResource(index));
 	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());

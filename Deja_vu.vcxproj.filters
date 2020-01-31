@@ -57,6 +57,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -102,6 +105,9 @@
       <Filter>Head</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
       <Filter>Head</Filter>
     </ClInclude>
   </ItemGroup>

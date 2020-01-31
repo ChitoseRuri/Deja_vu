@@ -57,8 +57,8 @@ protected:
 	ComPtr<ID3D11Buffer> m_indexBuffer;
 	size_t m_indexCount, m_vertexStride;
 
-	UINT32 m_status;
-	UINT32 m_isTrans;
+	UINT32 m_status;												// 标记，记录GameObject的状态@enum Status
+	UINT32 m_trans;													// 标记，记录做了什么空间变换@enum Trans
 	std::vector<GameObject*> m_childen;
 	GameObject* m_parent;
 

@@ -22,17 +22,17 @@ public:
 	~ResourceDepot();
 
 	ComPtr<ID3D11ShaderResourceView> getShaderResource(size_t index) const;
-	ComPtr<ID3D11ShaderResourceView> getShaderResource(const wchar_t* name) const;
+	ComPtr<ID3D11ShaderResourceView> getShaderResource(const std::wstring& name) const;
 	MeshBuffer getMeshBuffer(size_t index) const;
-	MeshBuffer getMeshBuffer(const wchar_t* name) const;
+	MeshBuffer getMeshBuffer(const std::wstring& name) const;
 
-	size_t loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, const wchar_t* name = nullptr);//DDS贴图读取
+	size_t loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name = L"");//DDS贴图读取
 	template<class VertexType, class IndexType>
-	size_t loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, const wchar_t* name = nullptr);// 针对Geometry类的读取
+	size_t loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, std::wstring name = L"");// 针对Geometry类的读取
 };
 
 template<class VertexType, class IndexType>
-inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, const wchar_t* name)
+inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, std::wstring name)
 {
 	ComPtr<ID3D11Buffer> vertexBuffer, indexBuffer;
 
@@ -68,7 +68,7 @@ inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry:
 	m_indexBuffer.push_back(indexBuffer);
 	m_vertexIndexCount.push_back(indexCount);
 	m_vertexStride.push_back(vertexStride);
-	if (name != nullptr)
+	if (!name.empty())
 	{
 		m_meshMap.insert(std::make_pair(name, index));
 	}
