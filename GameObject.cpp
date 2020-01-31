@@ -36,8 +36,9 @@ GameObject::GameObject() :
 	m_trans(NULL),
 	m_drawIndex(-1),
 	m_updateIndex(-1),
-	m_localMatrix(XMMatrixIdentity())
+	m_cbWorld({ XMMatrixIdentity(), XMMatrixIdentity() })
 {
+	// 把自己的指针放进GameObject统计列表里面
 	size_t index = -1;
 	size_t count = m_gameObjectList.size();
 	for (size_t i = 0; i < count; ++i)
@@ -55,7 +56,7 @@ GameObject::GameObject() :
 		m_gameObjectIndex = count;
 	}
 
-	setActiveUpdate(true);
+	setUpdateActive(true);
 	setVisable(true);
 }
 
@@ -69,7 +70,10 @@ void GameObject::updateAll(float dt)
 {
 	for (auto p : m_updateList)
 	{
-		p->update(dt);
+		if (p && p->getUpdateActive())
+		{
+			p->update(dt);
+		}
 	}
 }
 
@@ -169,37 +173,20 @@ void GameObject::setVisable(bool lb)
 	}
 }
 
-const bool GameObject::getActiveUpdate() const
+const bool GameObject::getUpdate() const
 {
-	return m_status & Status::updateActive;
+	return m_status & Status::updateAP;
 }
 
-void GameObject::setActiveUpdate(bool lb)
+void GameObject::setUpdate(bool lb)
 {
-	if (lb && m_updateIndex == -1)
+	if (m_parent == nullptr)
 	{
-		m_status |= Status::updateActive;
-		size_t count = m_updateList.size();
-		for (size_t i = 0; i < count; ++i)
-		{
-			if (m_updateList[i] == nullptr)
-			{
-				m_updateList[i] = this;
-				m_updateIndex = i;
-				break;
-			}
-		}
-		if (m_updateIndex == -1)
-		{
-			m_updateIndex = count;
-			m_updateList.push_back(this);
-		}
+		setUpdateActive(lb);
 	}
-	else if(!lb && m_updateIndex != -1)
+	else
 	{
-		m_status &= ~Status::updateActive;
-		m_updateList[m_updateIndex] = nullptr;
-		m_updateIndex = -1;
+		setUpdatePassive(lb);
 	}
 }
 
@@ -246,16 +233,11 @@ void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
 	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
 	ComPtr<ID3D11Buffer> cBuffer = nullptr;
 	pDeviceContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
-	CBWorld cbDrawing;
-
-	// 内部进行转置，这样外部就不需要提前转置了
-	cbDrawing.world = XMMatrixTranspose(m_localMatrix);
-	cbDrawing.worldInvTranspose = XMMatrixInverse(nullptr, m_localMatrix);	// 两次转置抵消
 
 	// 更新常量缓冲区
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(pDeviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(CBWorld), &cbDrawing, sizeof(CBWorld));
+	memcpy_s(mappedData.pData, sizeof(CBWorld), &m_cbWorld, sizeof(CBWorld));
 	pDeviceContext->Unmap(cBuffer.Get(), 0);
 
 	// 设置纹理
@@ -274,7 +256,8 @@ void GameObject::setParent(GameObject* parent)
 	if (parent == nullptr)//亲节点为空，自己主动更新
 	{
 		m_parent = parent;
-		setActiveUpdate(true);
+		setUpdatePassive(false);
+		setUpdateActive(true);
 		m_scaleP = { 1.0f,1.0f,1.0f };
 		m_rotation = { 0.0f,0.0f,0.0f };
 		m_locationP = { 0.0f, 0.0f, 0.0f };
@@ -284,7 +267,8 @@ void GameObject::setParent(GameObject* parent)
 	{
 		parent->addChildPassive(this);
 		m_parent = parent;
-		setActiveUpdate(false);// 关掉主动更新，改为亲节点更新
+		setUpdateActive(false);// 关掉主动更新，改为亲节点更新
+		setUpdatePassive(true);
 	}
 }
 
@@ -296,8 +280,9 @@ GameObject* GameObject::getParent() const
 void GameObject::addChild(GameObject* child)
 {
 	addChildPassive(child);
-	child->setActiveUpdate(false);
+	child->setUpdateActive(false);
 	child->setParentPassive(this);
+	child->setUpdatePassive(true);
 }
 
 void GameObject::delChild(GameObject* child)
@@ -309,7 +294,7 @@ void GameObject::delChild(GameObject* child)
 		{
 			m_childen.erase(m_childen.begin() + index);
 			child->setParent(nullptr);
-			child->setActiveUpdate(true);
+			child->setUpdateActive(true);
 			return;
 		}
 	}
@@ -326,6 +311,63 @@ void GameObject::setDebugObjectName(const std::string& name)
 #else
 	UNREFERENCED_PARAMETER(name);
 #endif
+}
+
+const bool GameObject::getUpdateActive() const
+{
+	return m_status & Status::updateActive;
+}
+
+void GameObject::setUpdateActive(bool lb)
+{
+	if (lb && m_updateIndex == -1)
+	{
+		assert(!(m_status & Status::updatePassive));
+		assert(!m_parent);
+
+		m_status |= Status::updateActive;
+		size_t count = m_updateList.size();
+		for (size_t i = 0; i < count; ++i)
+		{
+			if (m_updateList[i] == nullptr)
+			{
+				m_updateList[i] = this;
+				m_updateIndex = i;
+				break;
+			}
+		}
+		if (m_updateIndex == -1)
+		{
+			m_updateIndex = count;
+			m_updateList.push_back(this);
+		}
+	}
+	else if (!lb && m_updateIndex != -1)
+	{
+		m_status &= ~Status::updateActive;
+		m_updateList[m_updateIndex] = nullptr;
+		m_updateIndex = -1;
+	}
+}
+
+const bool GameObject::getUpdatePassive() const
+{
+	return m_status & Status::updatePassive;
+}
+
+void GameObject::setUpdatePassive(bool lb)
+{
+	if (lb)
+	{
+		assert(!(m_status & Status::updateActive));
+		assert(m_parent);
+
+		m_status |= Status::updatePassive;
+	}
+	else
+	{
+		m_status &= ~Status::updatePassive;
+	}
 }
 
 void GameObject::updateLocalMatrix()
@@ -352,7 +394,10 @@ void GameObject::updateLocalMatrix()
 		location.x, location.y, location.z, 1
 	};
 	XMMATRIX locationMatrix = XMLoadFloat4x4(&locationF4);
-	m_localMatrix = scaleMatrix * rotationMatrix * locationMatrix;
+	XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * locationMatrix;
+	// 内部进行转置，这样外部就不需要提前转置了
+	m_cbWorld.world = XMMatrixTranspose(worldMatrix);
+	m_cbWorld.worldInvTranspose = XMMatrixInverse(nullptr, worldMatrix);	// 两次转置抵消
 	// 根据更新总量更新子节点
 	if (m_trans | Trans::scale_t)
 	{

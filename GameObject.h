@@ -36,6 +36,7 @@ protected:
 		visable = 1,
 		updateActive = 1 << 1,
 		updatePassive = 1 << 2,
+		updateAP = updateActive | updatePassive,
 		statical = 1 << 3
 	};
 
@@ -51,7 +52,7 @@ protected:
 	XMFLOAT3 m_scale, m_scaleP;
 	XMFLOAT3 m_rotation, m_rotationP;
 
-	XMMATRIX m_localMatrix;
+	CBWorld m_cbWorld;												// 计算后的矩阵
 	ComPtr<ID3D11ShaderResourceView> m_texture;
 	ComPtr<ID3D11Buffer> m_vertexBuffer;
 	ComPtr<ID3D11Buffer> m_indexBuffer;
@@ -74,18 +75,18 @@ public:
 	void setLocation(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
-	void setScale(float x, float y, float z);// 角度
-	void setScale(const XMFLOAT3& scale);// 角度
+	void setScale(float x, float y, float z);
+	void setScale(const XMFLOAT3& scale);
 
 	const XMFLOAT3& getRotation() const;
-	void setRotation(float x, float y, float z);
-	void setRotation(const XMFLOAT3& rotation);
+	void setRotation(float x, float y, float z);						// 角度
+	void setRotation(const XMFLOAT3& rotation);							// 角度
 
 	const bool getVisable() const;
 	void setVisable(bool lb);
 
-	const bool getActiveUpdate() const;
-	void setActiveUpdate(bool lb);
+	const bool getUpdate() const;										// 判断是否为 主动|被动 更新
+	void setUpdate(bool lb);
 
 	void setTexture(ComPtr<ID3D11ShaderResourceView> texture);
 	auto getTexture() const;
@@ -105,6 +106,12 @@ public:
 	void setDebugObjectName(const std::string& name);
 
 private:
+	const bool getUpdateActive() const;						// 判断是否为主动更新
+	void setUpdateActive(bool lb);
+
+	const bool getUpdatePassive() const;					// 判断是否为被动更新
+	void setUpdatePassive(bool lb);
+
 	void updateLocalMatrix();
 	void setLocationP(const XMFLOAT3& location);
 	void setScaleP(const XMFLOAT3& scale);

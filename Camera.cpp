@@ -7,7 +7,6 @@ Camera::Camera():
 	m_NearWindowHeight(), m_FarWindowHeight(),
 	m_View(), m_Proj(), m_ViewPort()
 {
-	setActiveUpdate(true);
 	setVisable(false);
 }
 
@@ -20,57 +19,57 @@ XMVECTOR Camera::getLocationXM() const
 	return XMLoadFloat3(&m_location);
 }
 
-XMVECTOR Camera::GetRightXM() const
+XMVECTOR Camera::getRightXM() const
 {
 	return XMLoadFloat3(&m_Right);
 }
 
-XMFLOAT3 Camera::GetRight() const
+XMFLOAT3 Camera::getRight() const
 {
 	return m_Right;
 }
 
-XMVECTOR Camera::GetUpXM() const
+XMVECTOR Camera::getUpXM() const
 {
 	return XMLoadFloat3(&m_Up);
 }
 
-XMFLOAT3 Camera::GetUp() const
+XMFLOAT3 Camera::getUp() const
 {
 	return m_Up;
 }
 
-XMVECTOR Camera::GetLookXM() const
+XMVECTOR Camera::getLookXM() const
 {
 	return XMLoadFloat3(&m_Look);
 }
 
-XMFLOAT3 Camera::GetLook() const
+XMFLOAT3 Camera::getLook() const
 {
 	return m_Look;
 }
 
-XMMATRIX Camera::GetViewXM() const
+XMMATRIX Camera::getViewXM() const
 {
 	return XMLoadFloat4x4(&m_View);
 }
 
-XMMATRIX Camera::GetProjXM() const
+XMMATRIX Camera::getProjXM() const
 {
 	return XMLoadFloat4x4(&m_Proj);
 }
 
-XMMATRIX Camera::GetViewProjXM() const
+XMMATRIX Camera::getViewProjXM() const
 {
 	return XMLoadFloat4x4(&m_View) * XMLoadFloat4x4(&m_Proj);
 }
 
-D3D11_VIEWPORT Camera::GetViewPort() const
+D3D11_VIEWPORT Camera::getViewPort() const
 {
 	return m_ViewPort;
 }
 
-void Camera::SetFrustum(float fovY, float aspect, float nearZ, float farZ)
+void Camera::setFrustum(float fovY, float aspect, float nearZ, float farZ)
 {
 	m_FovY = fovY;
 	m_Aspect = aspect;
@@ -83,12 +82,12 @@ void Camera::SetFrustum(float fovY, float aspect, float nearZ, float farZ)
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ));
 }
 
-void Camera::SetViewPort(const D3D11_VIEWPORT& viewPort)
+void Camera::setViewPort(const D3D11_VIEWPORT& viewPort)
 {
 	m_ViewPort = viewPort;
 }
 
-void Camera::SetViewPort(float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth)
+void Camera::setViewPort(float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth)
 {
 	m_ViewPort.TopLeftX = topLeftX;
 	m_ViewPort.TopLeftY = topLeftY;
@@ -98,17 +97,17 @@ void Camera::SetViewPort(float topLeftX, float topLeftY, float width, float heig
 	m_ViewPort.MaxDepth = maxDepth;
 }
 
-void XM_CALLCONV Camera::LookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR up)
+void XM_CALLCONV Camera::lookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR up)
 {
-	LookTo(pos, target - pos, up);
+	lookTo(pos, target - pos, up);
 }
 
-void Camera::LookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up)
+void Camera::lookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up)
 {
-	LookAt(XMLoadFloat3(&pos), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	lookAt(XMLoadFloat3(&pos), XMLoadFloat3(&target), XMLoadFloat3(&up));
 }
 
-void XM_CALLCONV Camera::LookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR to, DirectX::FXMVECTOR up)
+void XM_CALLCONV Camera::lookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR to, DirectX::FXMVECTOR up)
 {
 	XMVECTOR L = XMVector3Normalize(to);
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(up, L));
@@ -120,9 +119,9 @@ void XM_CALLCONV Camera::LookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR to, D
 	XMStoreFloat3(&m_Up, U);
 }
 
-void Camera::LookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, const DirectX::XMFLOAT3& up)
+void Camera::lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, const DirectX::XMFLOAT3& up)
 {
-	LookTo(XMLoadFloat3(&pos), XMLoadFloat3(&to), XMLoadFloat3(&up));
+	lookTo(XMLoadFloat3(&pos), XMLoadFloat3(&to), XMLoadFloat3(&up));
 }
 
 void Camera::update(float dt)

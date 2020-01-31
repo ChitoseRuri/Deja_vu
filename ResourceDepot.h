@@ -70,7 +70,7 @@ inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry:
 	m_vertexStride.push_back(vertexStride);
 	if (!name.empty())
 	{
-		m_meshMap.insert(std::make_pair(name, index));
+		m_meshMap.insert(std::make_pair(std::move(name), index));
 	}
 	return index;
 }

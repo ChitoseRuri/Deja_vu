@@ -79,9 +79,9 @@ void GameApp::OnResize()
 	// 摄像机变更显示
 	if (m_pCamera != nullptr)
 	{
-		m_pCamera->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-		m_pCamera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-		m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->GetProjXM());
+		m_pCamera->setFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+		m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+		m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->getProjXM());
 		
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 		HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
@@ -101,17 +101,16 @@ void GameApp::UpdateScene(float dt)
 
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
-	m_CBFrame.view = XMMatrixTranspose(m_pCamera->GetViewXM());
+	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
 
 	GameObject::updateAll(dt);
 
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
-	GameObject::updateAll(dt);
 	// 退出程序，这里应向窗口发送销毁信息
 	if (keyState.IsKeyDown(Keyboard::Escape))
 		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
-	
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(CBCamera), &m_CBFrame, sizeof(CBCamera));
@@ -232,11 +231,11 @@ bool GameApp::InitResource()
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
 	m_pCamera = std::shared_ptr<Camera>(new Camera);
-	m_pCamera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	m_pCamera->LookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+	m_pCamera->lookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// 初始化仅在窗口大小变动时修改的值
-	m_pCamera->SetFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
-	m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->GetProjXM());
+	m_pCamera->setFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+	m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->getProjXM());
 
 	// 初始化不会变化的值
 	// 环境光
