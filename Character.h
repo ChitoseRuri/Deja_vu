@@ -11,13 +11,13 @@ protected:
 	XMFLOAT3 m_resistance;							// 阻力加速度
 	std::vector<XMFLOAT3> m_eyePos;					// 视点集
 	UINT32 m_eyeIndex;								// 选用的视点
-	Camera m_camera;
+	std::shared_ptr<Camera> m_pCamera;
 
 public:
 	Character();
 	~Character();
 
-	const Camera& getCamera() const;
+	std::shared_ptr<Camera> getCamera() const;
 
 	void setSpeedVector(const XMFLOAT3& speed);
 	void setSpeedVector(float x, float y, float z);

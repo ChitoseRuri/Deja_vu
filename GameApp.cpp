@@ -212,6 +212,7 @@ bool GameApp::InitResource()
 	m_WoodCrate2.setLocation(-1.0f, -1.0f, 0.0f);
 	m_WoodCrate1.setRotation(0.f, 0.f, 45.f);
 	m_WoodCrate2.setRotation(0.f, 0.f, 45.f);
+	//m_character.addChild(&m_WoodCrate1);
 	//m_WoodCrate.setScale(0.5f, 0.5f, 0.5f);
 		
 	// 初始化采样器状态
@@ -230,7 +231,7 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
-	m_pCamera = std::shared_ptr<Camera>(new Camera);
+	m_pCamera = m_character.getCamera();
 	m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	m_pCamera->lookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	// 初始化仅在窗口大小变动时修改的值

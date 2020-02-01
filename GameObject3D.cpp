@@ -389,21 +389,21 @@ void GameObject3D::updateLocalMatrix()
 	m_cbWorld.world = XMMatrixTranspose(worldMatrix);
 	m_cbWorld.worldInvTranspose = XMMatrixInverse(nullptr, worldMatrix);	// 两次转置抵消
 	// 根据更新总量更新子节点
-	if (m_trans | Trans::scale_t)
+	if (m_trans & Trans::scale_t)
 	{
 		for (auto child : m_childen)
 		{
 			child->setScaleP(scale);
 		}
 	}
-	if (m_trans | Trans::rotate_t)
+	if (m_trans & Trans::rotate_t)
 	{
 		for (auto child : m_childen)
 		{
 			child->setRotationP(rotation);
 		}
 	}
-	if (m_trans | Trans::locate_t)
+	if (m_trans & Trans::locate_t)
 	{
 		for (auto child : m_childen)
 		{

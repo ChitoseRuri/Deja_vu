@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+using namespace XMF_MATH;
+
 Camera::Camera():
 	m_Right(0.0f, 0.0f, 0.0f),
 	m_Up(0.0f, 0.0f, 0.0f), m_Look(0.0f, 0.0f, 0.0f),
@@ -126,10 +128,12 @@ void Camera::lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, c
 
 void Camera::update(float dt)
 {
+	updateLocalMatrix();
+
 	XMVECTOR R = XMLoadFloat3(&m_Right);
 	XMVECTOR U = XMLoadFloat3(&m_Up);
 	XMVECTOR L = XMLoadFloat3(&m_Look);
-	XMVECTOR P = XMLoadFloat3(&m_location);
+	XMVECTOR P = XMLoadFloat3(&(m_location + m_locationP));
 
 	// 保持摄像机的轴互为正交，且长度都为1
 	L = XMVector3Normalize(L);
@@ -153,4 +157,9 @@ void Camera::update(float dt)
 		m_Right.z, m_Up.z, m_Look.z, 0.0f,
 		x, y, z, 1.0f
 	};
+
+	for (auto child : m_childen)
+	{
+		child->update(dt);
+	}
 }

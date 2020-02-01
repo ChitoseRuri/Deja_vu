@@ -2,17 +2,22 @@
 
 using namespace XMF_MATH;
 
-Character::Character()
+Character::Character() :
+	m_pCamera(std::shared_ptr<Camera>(new Camera)),
+	m_acceleration({0.0f, 0.0f, 0.0f}),
+	m_resistance({ 0.0f, 0.0f, 0.0f }),
+	m_speedVector({ 0.0f,0.1f,0.0f })
 {
+	addChild(&*m_pCamera);
 }
 
 Character::~Character()
 {
 }
 
-const Camera& Character::getCamera() const
+std::shared_ptr<Camera> Character::getCamera() const
 {
-	return m_camera;
+	return m_pCamera;
 }
 
 void Character::setSpeedVector(const XMFLOAT3& speed)
@@ -63,6 +68,11 @@ const XMFLOAT3& Character::getResistance() const
 void Character::update(float dt)
 {
 	updateSpeed(dt);
+	updateLocalMatrix();
+	for (auto child : m_childen)
+	{
+		child->update(dt);
+	}
 }
 
 void Character::updateSpeed(float dt)
