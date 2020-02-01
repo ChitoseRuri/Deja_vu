@@ -1,6 +1,7 @@
 #include "GameObject3D.h"
 
 std::vector<GameObject3D*> GameObject3D::m_gameObjectList, GameObject3D::m_updateList, GameObject3D::m_drawList;
+ComPtr<ID3D11DeviceContext> GameObject3D::m_pd3dImmediateContext;
 
 constexpr float toRadian(float angle)
 {
@@ -56,6 +57,11 @@ GameObject3D::~GameObject3D()
 	m_gameObjectIndex = -1;
 }
 
+void GameObject3D::init(ComPtr<ID3D11DeviceContext> pd3dImmediateContext)
+{
+	m_pd3dImmediateContext = pd3dImmediateContext;
+}
+
 void GameObject3D::updateAll(float dt)
 {
 	for (auto p : m_updateList)
@@ -67,29 +73,29 @@ void GameObject3D::updateAll(float dt)
 	}
 }
 
-void GameObject3D::drawAll(ID3D11DeviceContext* pDeviceContext)
+void GameObject3D::drawAll()
 {
 	for (auto p : m_drawList)
 	{
 		if (p)
 		{
-			p->draw(pDeviceContext);
+			p->draw();
 		}
 	}
 }
 
-const XMFLOAT3& GameObject3D::getLocation() const
+const XMFLOAT3& GameObject3D::getRect() const
 {
 	return m_location;
 }
 
-void GameObject3D::setLocation(float x, float y, float z)
+void GameObject3D::setRect(float x, float y, float z)
 {
 	m_location = { x, y, z };
 	m_trans |= Trans::locate_t;
 }
 
-void GameObject3D::setLocation(const XMFLOAT3& location)
+void GameObject3D::setRect(const XMFLOAT3& location)
 {
 	m_location = location;
 	m_trans |= Trans::locate_t;
@@ -212,28 +218,28 @@ void GameObject3D::update(float dt)
 	}
 }
 
-void GameObject3D::draw(ID3D11DeviceContext* pDeviceContext)
+void GameObject3D::draw()
 {
 	// 设置顶点/索引缓冲区
 	UINT strides = m_vertexStride;
 	UINT offsets = 0;
-	pDeviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &strides, &offsets);
-	pDeviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &strides, &offsets);
+	m_pd3dImmediateContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
 	ComPtr<ID3D11Buffer> cBuffer = nullptr;
-	pDeviceContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
+	m_pd3dImmediateContext->VSGetConstantBuffers(0, 1, cBuffer.GetAddressOf());
 
 	// 更新常量缓冲区
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	HR(pDeviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	HR(m_pd3dImmediateContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(CBWorld), &m_cbWorld, sizeof(CBWorld));
-	pDeviceContext->Unmap(cBuffer.Get(), 0);
+	m_pd3dImmediateContext->Unmap(cBuffer.Get(), 0);
 
 	// 设置纹理
-	pDeviceContext->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 	// 可以开始绘制
-	pDeviceContext->DrawIndexed(m_indexCount, 0, 0);
+	m_pd3dImmediateContext->DrawIndexed(m_indexCount, 0, 0);
 }
 
 void GameObject3D::setParent(GameObject3D* parent)

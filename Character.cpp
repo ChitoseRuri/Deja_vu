@@ -6,9 +6,12 @@ Character::Character() :
 	m_pCamera(std::shared_ptr<Camera>(new Camera)),
 	m_acceleration({0.0f, 0.0f, 0.0f}),
 	m_resistance({ 0.0f, 0.0f, 0.0f }),
-	m_speedVector({ 0.0f,0.1f,0.0f })
+	m_speedVector({ 0.0f, 0.0f, 0.0f }),
+	m_eyeIndex(0)
 {
 	addChild(&*m_pCamera);
+	m_eyePos.push_back(XMFLOAT3(0.0f, 0.0f, -4.0f));
+	m_pCamera->lookAt(m_eyePos[m_eyeIndex], XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 }
 
 Character::~Character()
@@ -105,5 +108,5 @@ void Character::updateSpeed(float dt)
 		m_speedVector.z += m_resistance.z;
 	}
 
-	setLocation(m_location + (m_speedVector * dt));
+	setRect(m_location + (m_speedVector * dt));
 }

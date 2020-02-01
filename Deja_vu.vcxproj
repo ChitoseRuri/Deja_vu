@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="d3dApp.h" />
@@ -145,16 +146,21 @@
     <ClInclude Include="GameObject3D.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="ResourceDepot.h" />
     <ClInclude Include="Sence.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="XMF_MATH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="d3dApp.cpp" />
@@ -165,11 +171,15 @@
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="GameObject3D.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="ResourceDepot.cpp" />
     <ClCompile Include="Sence.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
     <ClCompile Include="XMF_MATH.cpp" />

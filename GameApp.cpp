@@ -20,6 +20,9 @@ bool GameApp::Init()
 	if (!D3DApp::Init())
 		return false;
 
+	GameObject2D::init(m_pd2dRenderTarget, m_pdwriteFactory);
+	GameObject3D::init(m_pd3dImmediateContext);
+
 	if (!InitEffect())
 		return false;
 
@@ -42,7 +45,7 @@ void GameApp::OnResize()
 	m_pd2dRenderTarget.Reset();
 
 	D3DApp::OnResize();
-
+	
 	// 为D2D创建DXGI表面渲染目标
 	ComPtr<IDXGISurface> surface;
 	HR(m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface), reinterpret_cast<void**>(surface.GetAddressOf())));
@@ -128,7 +131,7 @@ void GameApp::DrawScene()
 	//
 	// 绘制几何模型
 	//
-	GameObject3D::drawAll(m_pd3dImmediateContext.Get());
+	GameObject3D::drawAll();
 
 	//
 	// 绘制Direct2D部分
@@ -143,6 +146,8 @@ void GameApp::DrawScene()
 		m_pd2dRenderTarget->DrawTextW(text.c_str(), (UINT32)text.length(), m_pTextFormat.Get(),
 			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
 		HR(m_pd2dRenderTarget->EndDraw());
+
+		m_label.draw();
 	}
 
 	HR(m_pSwapChain->Present(0, 0));
@@ -206,15 +211,21 @@ bool GameApp::InitResource()
 	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
 	m_WoodCrate1.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
 	m_WoodCrate2.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
-	m_WoodCrate1.setLocation(0.0f, 1.0f, 0.0f);
+	m_WoodCrate1.setRect(0.0f, 1.0f, 0.0f);
 	m_WoodCrate1.addChild(&m_WoodCrate2);
 	m_WoodCrate2.setScale(0.5f, 0.5f, 0.5f);
-	m_WoodCrate2.setLocation(-1.0f, -1.0f, 0.0f);
+	m_WoodCrate2.setRect(-1.0f, -1.0f, 0.0f);
 	m_WoodCrate1.setRotation(0.f, 0.f, 45.f);
 	m_WoodCrate2.setRotation(0.f, 0.f, 45.f);
 	//m_character.addChild(&m_WoodCrate1);
 	//m_WoodCrate.setScale(0.5f, 0.5f, 0.5f);
 		
+	// 2D测试
+	m_label.setText(L"Fubuki hasihasi");
+	m_label.setTextColor(D2D1::ColorF::Red);
+	m_label.setTextFormat(L"normal", L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn");
+
 	// 初始化采样器状态
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -233,7 +244,7 @@ bool GameApp::InitResource()
 	// 初始化每帧可能会变化的值
 	m_pCamera = m_character.getCamera();
 	m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	m_pCamera->lookAt(XMFLOAT3(0.0f,0.0f,-4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+
 	// 初始化仅在窗口大小变动时修改的值
 	m_pCamera->setFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
 	m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->getProjXM());

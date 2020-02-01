@@ -29,6 +29,7 @@ class GameObject3D
 {
 private:
 	static std::vector<GameObject3D*> m_gameObjectList, m_updateList, m_drawList;
+	static ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;
 	size_t m_gameObjectIndex, m_updateIndex, m_drawIndex;
 
 protected:
@@ -68,12 +69,13 @@ public:
 	GameObject3D();
 	virtual ~GameObject3D();
 
+	static void init(ComPtr<ID3D11DeviceContext> pd3dImmediateContext); // 系统初始化
 	static void updateAll(float dt);									// 更新全部
-	static void drawAll(ID3D11DeviceContext* pDeviceContext);			// 绘制全部
+	static void drawAll();			// 绘制全部
 
-	const XMFLOAT3& getLocation() const;
-	void setLocation(float x, float y, float z);
-	void setLocation(const XMFLOAT3& location);
+	const XMFLOAT3& getRect() const;
+	void setRect(float x, float y, float z);
+	void setRect(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
 	void setScale(float x, float y, float z);
@@ -96,7 +98,7 @@ public:
 	auto getMeshBuffer() const;
 
 	virtual void update(float dt);// 更新，亲节点负责更新子节点
-	virtual void draw(ID3D11DeviceContext* pDeviceContext);
+	virtual void draw();
 
 	void setParent(GameObject3D* parent);
 	GameObject3D* getParent()const;

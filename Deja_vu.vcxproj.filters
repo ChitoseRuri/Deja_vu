@@ -16,114 +16,148 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="d3dUtil.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="DXTrace.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="GameApp.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
     </ClCompile>
     <ClCompile Include="ResourceDepot.cpp">
-      <Filter>Source</Filter>
+      <Filter>Current\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="XMF_MATH.cpp">
+      <Filter>Current\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>2D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>2D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>2D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>2D\Source</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source</Filter>
+      <Filter>3D\Source</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Sence.cpp">
-      <Filter>Source</Filter>
+      <Filter>3D\Source</Filter>
     </ClCompile>
     <ClCompile Include="GameObject3D.cpp">
-      <Filter>Source</Filter>
+      <Filter>3D\Source</Filter>
     </ClCompile>
     <ClCompile Include="GameObject2D.cpp">
-      <Filter>Source</Filter>
+      <Filter>2D\Source</Filter>
     </ClCompile>
-    <ClCompile Include="XMF_MATH.cpp" />
+    <ClCompile Include="Sence.cpp">
+      <Filter>Sence\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>2D\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="d3dUtil.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="DDSTextureLoader.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="DXTrace.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="GameApp.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="LightHelper.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="Mouse.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="WICTextureLoader.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
     </ClInclude>
     <ClInclude Include="ResourceDepot.h">
-      <Filter>Head</Filter>
+      <Filter>Current\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="XMF_MATH.h">
+      <Filter>Current\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>2D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>2D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>2D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>2D\Head</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Head</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Head</Filter>
-    </ClInclude>
-    <ClInclude Include="Sence.h">
-      <Filter>Head</Filter>
+      <Filter>3D\Head</Filter>
     </ClInclude>
     <ClInclude Include="GameObject3D.h">
-      <Filter>Head</Filter>
+      <Filter>3D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>3D\Head</Filter>
     </ClInclude>
     <ClInclude Include="GameObject2D.h">
-      <Filter>Head</Filter>
+      <Filter>2D\Head</Filter>
     </ClInclude>
-    <ClInclude Include="XMF_MATH.h" />
+    <ClInclude Include="Sence.h">
+      <Filter>Sence\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>2D\Head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Basic.hlsli">
@@ -134,17 +168,44 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source">
-      <UniqueIdentifier>{8e2969f7-1dec-46b3-9737-248e07f5d911}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HLSL">
       <UniqueIdentifier>{60f2a452-c32d-473b-bf02-f356ee12fb09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Head">
-      <UniqueIdentifier>{4025ae30-e65c-4057-ad98-a623c99f65f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sence">
       <UniqueIdentifier>{2ae3d1c4-bec2-4b52-909c-53e860d771ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D">
+      <UniqueIdentifier>{e96c9d78-c661-4b6f-bf0b-dabfa26b70e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D">
+      <UniqueIdentifier>{3e9b4f21-ecbc-4465-8cea-39f4106a53a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Current">
+      <UniqueIdentifier>{7d923c05-2854-4eed-bd28-9a4f0a6de54a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D\Head">
+      <UniqueIdentifier>{794a02b8-05f7-4af4-9b95-ac83ae9adc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D\Source">
+      <UniqueIdentifier>{6ac009a0-c6d4-4171-b58e-4722dd1e6c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D\Head">
+      <UniqueIdentifier>{c0ac169c-3b9a-4b6e-af73-e5e5d6547435}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D\Source">
+      <UniqueIdentifier>{424d7706-644e-4df1-8286-d413d7250a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Current\Head">
+      <UniqueIdentifier>{4025ae30-e65c-4057-ad98-a623c99f65f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Current\Source">
+      <UniqueIdentifier>{8e2969f7-1dec-46b3-9737-248e07f5d911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sence\Head">
+      <UniqueIdentifier>{1bf466de-d6d7-43f7-b9b3-2bb9840a901c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sence\Source">
+      <UniqueIdentifier>{53fd930a-7894-4d5b-8cb4-b076942f8839}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

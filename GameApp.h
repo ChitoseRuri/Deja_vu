@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "ResourceDepot.h"
 #include "Character.h"
+#include "Label.h"
 
 class GameApp : public D3DApp
 {
@@ -75,6 +76,7 @@ private:
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
 	ResourceDepot m_resourceDepot;
 	Character m_character;
+	Label m_label;
 };
 
 
