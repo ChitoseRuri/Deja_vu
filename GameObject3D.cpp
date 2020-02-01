@@ -1,6 +1,6 @@
-#include "GameObject.h"
+#include "GameObject3D.h"
 
-std::vector<GameObject*> GameObject::m_gameObjectList, GameObject::m_updateList, GameObject::m_drawList;
+std::vector<GameObject3D*> GameObject3D::m_gameObjectList, GameObject3D::m_updateList, GameObject3D::m_drawList;
 
 constexpr float toRadian(float angle)
 {
@@ -12,19 +12,9 @@ constexpr float toAngle(float radian)
 	return radian * 57.29578f;
 }
 
-// 向量相加
-XMFLOAT3 operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
-{
-	return { lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z };
-}
+using namespace XMF_MATH;
 
-// 向量点乘
-XMFLOAT3 operator*(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
-{
-	return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
-}
-
-GameObject::GameObject() :
+GameObject3D::GameObject3D() :
 	m_parent(nullptr),
 	m_location(.0f, .0f, .0f),
 	m_scale(1.0f, 1.0f, 1.0f),
@@ -60,13 +50,13 @@ GameObject::GameObject() :
 	setVisable(true);
 }
 
-GameObject::~GameObject()
+GameObject3D::~GameObject3D()
 {
 	m_gameObjectList[m_gameObjectIndex] = nullptr;
 	m_gameObjectIndex = -1;
 }
 
-void GameObject::updateAll(float dt)
+void GameObject3D::updateAll(float dt)
 {
 	for (auto p : m_updateList)
 	{
@@ -77,7 +67,7 @@ void GameObject::updateAll(float dt)
 	}
 }
 
-void GameObject::drawAll(ID3D11DeviceContext* pDeviceContext)
+void GameObject3D::drawAll(ID3D11DeviceContext* pDeviceContext)
 {
 	for (auto p : m_drawList)
 	{
@@ -88,63 +78,63 @@ void GameObject::drawAll(ID3D11DeviceContext* pDeviceContext)
 	}
 }
 
-const XMFLOAT3& GameObject::getLocation() const
+const XMFLOAT3& GameObject3D::getLocation() const
 {
 	return m_location;
 }
 
-void GameObject::setLocation(float x, float y, float z)
+void GameObject3D::setLocation(float x, float y, float z)
 {
 	m_location = { x, y, z };
 	m_trans |= Trans::locate_t;
 }
 
-void GameObject::setLocation(const XMFLOAT3& location)
+void GameObject3D::setLocation(const XMFLOAT3& location)
 {
 	m_location = location;
 	m_trans |= Trans::locate_t;
 }
 
-const XMFLOAT3& GameObject::getScale() const
+const XMFLOAT3& GameObject3D::getScale() const
 {
 	return m_scale;
 }
 
-void GameObject::setScale(float x, float y, float z)
+void GameObject3D::setScale(float x, float y, float z)
 {
 	m_scale = { x, y, z };
 	m_trans |= Trans::scale_t;
 }
 
-void GameObject::setScale(const XMFLOAT3& scale)
+void GameObject3D::setScale(const XMFLOAT3& scale)
 {
 	m_scale = scale;
 	m_trans |= Trans::scale_t;
 }
 
-const XMFLOAT3& GameObject::getRotation() const
+const XMFLOAT3& GameObject3D::getRotation() const
 {
 	return m_rotation;
 }
 
-void GameObject::setRotation(float x, float y, float z)
+void GameObject3D::setRotation(float x, float y, float z)
 {
 	m_rotation = { x, y, z };
 	m_trans |= Trans::rotate_t;
 }
 
-void GameObject::setRotation(const XMFLOAT3& rotation)
+void GameObject3D::setRotation(const XMFLOAT3& rotation)
 {
 	m_rotation = rotation;
 	m_trans |= Trans::rotate_t;
 }
 
-const bool GameObject::getVisable() const
+const bool GameObject3D::getVisable() const
 {
 	return m_status & Status::visable;
 }
 
-void GameObject::setVisable(bool lb)
+void GameObject3D::setVisable(bool lb)
 {
 	if (lb && m_drawIndex == -1)
 	{
@@ -173,12 +163,12 @@ void GameObject::setVisable(bool lb)
 	}
 }
 
-const bool GameObject::getUpdate() const
+const bool GameObject3D::getUpdate() const
 {
 	return m_status & Status::updateAP;
 }
 
-void GameObject::setUpdate(bool lb)
+void GameObject3D::setUpdate(bool lb)
 {
 	if (m_parent == nullptr)
 	{
@@ -190,17 +180,17 @@ void GameObject::setUpdate(bool lb)
 	}
 }
 
-void GameObject::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
+void GameObject3D::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
 {
 	m_texture = texture;
 }
 
-auto GameObject::getTexture() const
+auto GameObject3D::getTexture() const
 {
 	return m_texture;
 }
 
-void GameObject::setMeshbuffer(const MeshBuffer& meshBuffer)
+void GameObject3D::setMeshbuffer(const MeshBuffer& meshBuffer)
 {
 	m_vertexBuffer = meshBuffer.vertexBuffer;
 	m_indexBuffer = meshBuffer.indexBuffer;
@@ -208,12 +198,12 @@ void GameObject::setMeshbuffer(const MeshBuffer& meshBuffer)
 	m_vertexStride = meshBuffer.vertexStride;
 }
 
-auto GameObject::getMeshBuffer() const
+auto GameObject3D::getMeshBuffer() const
 {
 	return MeshBuffer{ m_vertexBuffer, m_indexBuffer, m_indexCount };
 }
 
-void GameObject::update(float dt)
+void GameObject3D::update(float dt)
 {
 	updateLocalMatrix();
 	for (auto child : m_childen)
@@ -222,7 +212,7 @@ void GameObject::update(float dt)
 	}
 }
 
-void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
+void GameObject3D::draw(ID3D11DeviceContext* pDeviceContext)
 {
 	// 设置顶点/索引缓冲区
 	UINT strides = m_vertexStride;
@@ -246,7 +236,7 @@ void GameObject::draw(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->DrawIndexed(m_indexCount, 0, 0);
 }
 
-void GameObject::setParent(GameObject* parent)
+void GameObject3D::setParent(GameObject3D* parent)
 {
 	if (parent == m_parent)
 	{
@@ -272,12 +262,12 @@ void GameObject::setParent(GameObject* parent)
 	}
 }
 
-GameObject* GameObject::getParent() const
+GameObject3D* GameObject3D::getParent() const
 {
 	return m_parent;
 }
 
-void GameObject::addChild(GameObject* child)
+void GameObject3D::addChild(GameObject3D* child)
 {
 	addChildPassive(child);
 	child->setUpdateActive(false);
@@ -285,7 +275,7 @@ void GameObject::addChild(GameObject* child)
 	child->setUpdatePassive(true);
 }
 
-void GameObject::delChild(GameObject* child)
+void GameObject3D::delChild(GameObject3D* child)
 {
 	size_t size = m_childen.size();
 	for (size_t index = 0; index < size; ++index)
@@ -301,7 +291,7 @@ void GameObject::delChild(GameObject* child)
 	assert(true);
 }
 
-void GameObject::setDebugObjectName(const std::string& name)
+void GameObject3D::setDebugObjectName(const std::string& name)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
 	std::string vbName = name + ".VertexBuffer";
@@ -313,12 +303,12 @@ void GameObject::setDebugObjectName(const std::string& name)
 #endif
 }
 
-const bool GameObject::getUpdateActive() const
+const bool GameObject3D::getUpdateActive() const
 {
 	return m_status & Status::updateActive;
 }
 
-void GameObject::setUpdateActive(bool lb)
+void GameObject3D::setUpdateActive(bool lb)
 {
 	if (lb && m_updateIndex == -1)
 	{
@@ -350,12 +340,12 @@ void GameObject::setUpdateActive(bool lb)
 	}
 }
 
-const bool GameObject::getUpdatePassive() const
+const bool GameObject3D::getUpdatePassive() const
 {
 	return m_status & Status::updatePassive;
 }
 
-void GameObject::setUpdatePassive(bool lb)
+void GameObject3D::setUpdatePassive(bool lb)
 {
 	if (lb)
 	{
@@ -370,7 +360,7 @@ void GameObject::setUpdatePassive(bool lb)
 	}
 }
 
-void GameObject::updateLocalMatrix()
+void GameObject3D::updateLocalMatrix()
 {
 	if (!m_trans)
 	{
@@ -423,30 +413,30 @@ void GameObject::updateLocalMatrix()
 	m_trans = NULL;// 重置修改判断符
 }
 
-void GameObject::setLocationP(const XMFLOAT3& location)
+void GameObject3D::setLocationP(const XMFLOAT3& location)
 {
 	m_locationP = location;
 	m_trans |= Trans::locate_t;
 }
 
-void GameObject::setScaleP(const XMFLOAT3& scale)
+void GameObject3D::setScaleP(const XMFLOAT3& scale)
 {
 	m_scaleP = scale;
 	m_trans |= Trans::scale_t;
 }
 
-void GameObject::setRotationP(const XMFLOAT3& rotation)
+void GameObject3D::setRotationP(const XMFLOAT3& rotation)
 {
 	m_rotationP = rotation;
 	m_trans |= rotate_t;
 }
 
-void GameObject::setParentPassive(GameObject* parent)
+void GameObject3D::setParentPassive(GameObject3D* parent)
 {
 	m_parent = parent;
 }
 
-void GameObject::addChildPassive(GameObject* child)
+void GameObject3D::addChildPassive(GameObject3D* child)
 {
 	if (child->getParent() == this)
 	{
@@ -458,3 +448,4 @@ void GameObject::addChildPassive(GameObject* child)
 	child->setRotationP(m_rotation * m_rotationP);
 	child->setLocationP(m_location + m_locationP);
 }
+

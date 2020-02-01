@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "GameObject3D.h"
 #include "DDSTextureLoader.h"
 #include "Geometry.h"
 #include "d3dUtil.h"

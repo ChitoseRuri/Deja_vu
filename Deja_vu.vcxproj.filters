@@ -48,9 +48,6 @@
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceDepot.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -60,6 +57,16 @@
     <ClCompile Include="Character.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Sence.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject3D.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject2D.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="XMF_MATH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -98,9 +105,6 @@
     <ClInclude Include="WICTextureLoader.h">
       <Filter>Head</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Head</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceDepot.h">
       <Filter>Head</Filter>
     </ClInclude>
@@ -110,13 +114,23 @@
     <ClInclude Include="Character.h">
       <Filter>Head</Filter>
     </ClInclude>
+    <ClInclude Include="Sence.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject3D.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject2D.h">
+      <Filter>Head</Filter>
+    </ClInclude>
+    <ClInclude Include="XMF_MATH.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Basic.hlsli">
       <Filter>HLSL</Filter>
     </None>
     <None Include="HLSL\LightHelper.hlsli">
-      <Filter>Head</Filter>
+      <Filter>HLSL</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +142,9 @@
     </Filter>
     <Filter Include="Head">
       <UniqueIdentifier>{4025ae30-e65c-4057-ad98-a623c99f65f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sence">
+      <UniqueIdentifier>{2ae3d1c4-bec2-4b52-909c-53e860d771ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

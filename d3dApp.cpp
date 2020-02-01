@@ -103,8 +103,8 @@ int D3DApp::Run()
 
 bool D3DApp::Init()
 {
-	m_pMouse = std::make_unique<DirectX::Mouse>();
-	m_pKeyboard = std::make_unique<DirectX::Keyboard>();
+	m_pMouse = std::make_shared<DirectX::Mouse>();
+	m_pKeyboard = std::make_shared<DirectX::Keyboard>();
 
 	if (!InitMainWindow())
 		return false;

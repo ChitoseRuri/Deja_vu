@@ -103,7 +103,7 @@ void GameApp::UpdateScene(float dt)
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
 
-	GameObject::updateAll(dt);
+	GameObject3D::updateAll(dt);
 
 	// 重置滚轮值
 	m_pMouse->ResetScrollWheelValue();
@@ -128,7 +128,7 @@ void GameApp::DrawScene()
 	//
 	// 绘制几何模型
 	//
-	GameObject::drawAll(m_pd3dImmediateContext.Get());
+	GameObject3D::drawAll(m_pd3dImmediateContext.Get());
 
 	//
 	// 绘制Direct2D部分

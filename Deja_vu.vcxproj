@@ -141,15 +141,18 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DXTrace.h" />
     <ClInclude Include="GameApp.h" />
-    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObject2D.h" />
+    <ClInclude Include="GameObject3D.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="ResourceDepot.h" />
+    <ClInclude Include="Sence.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WICTextureLoader.h" />
+    <ClInclude Include="XMF_MATH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -159,14 +162,17 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DXTrace.cpp" />
     <ClCompile Include="GameApp.cpp" />
-    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObject2D.cpp" />
+    <ClCompile Include="GameObject3D.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="ResourceDepot.cpp" />
+    <ClCompile Include="Sence.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
+    <ClCompile Include="XMF_MATH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Basic.hlsli">
