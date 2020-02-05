@@ -84,6 +84,9 @@
     <ClCompile Include="UI.cpp">
       <Filter>2D\Source</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Current\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>2D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Current\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

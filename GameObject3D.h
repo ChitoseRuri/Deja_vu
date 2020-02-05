@@ -1,6 +1,5 @@
 #pragma once
-#include "d3dApp.h"
-#include "d3dUtil.h"
+#include "GameObject.h"
 #include "DXTrace.h"
 #include "XMF_MATH.h"
 #include <vector>
@@ -11,12 +10,6 @@ using namespace DirectX;
 template <class T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-struct CBWorld
-{
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-};
-
 struct MeshBuffer
 {
 	ComPtr<ID3D11Buffer> vertexBuffer;
@@ -25,23 +18,14 @@ struct MeshBuffer
 	size_t vertexStride;
 };
 
-class GameObject3D
+class GameObject3D:
+	public GameObject
 {
 private:
-	static std::vector<GameObject3D*> m_gameObjectList, m_updateList, m_drawList;
-	static ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;
-	size_t m_gameObjectIndex, m_updateIndex, m_drawIndex;
+	static std::vector<GameObject3D*> m_gameObject3DList, m_updateList, m_drawList;
+	size_t m_gameObject3DIndex, m_updateIndex, m_drawIndex;
 
 protected:
-	enum Status
-	{
-		visable = 1,
-		updateActive = 1 << 1,
-		updatePassive = 1 << 2,
-		updateAP = updateActive | updatePassive,
-		statical = 1 << 3
-	};
-
 	enum Trans
 	{
 		scale_t,
@@ -55,9 +39,9 @@ protected:
 	XMFLOAT3 m_rotation, m_rotationP;
 
 	CBWorld m_cbWorld;												// 计算后的矩阵
-	ComPtr<ID3D11ShaderResourceView> m_texture;
-	ComPtr<ID3D11Buffer> m_vertexBuffer;
-	ComPtr<ID3D11Buffer> m_indexBuffer;
+	ComPtr<ID3D11ShaderResourceView> m_pTexture;
+	ComPtr<ID3D11Buffer> m_pVertexBuffer;
+	ComPtr<ID3D11Buffer> m_pIndexBuffer;
 	size_t m_indexCount, m_vertexStride;
 
 	UINT32 m_status;												// 标记，记录GameObject的状态@enum Status
@@ -73,9 +57,9 @@ public:
 	static void updateAll(float dt);									// 更新全部
 	static void drawAll();			// 绘制全部
 
-	const XMFLOAT3& getRect() const;
-	void setRect(float x, float y, float z);
-	void setRect(const XMFLOAT3& location);
+	const XMFLOAT3& setLocation() const;
+	void setLocation(float x, float y, float z);
+	void setLocation(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
 	void setScale(float x, float y, float z);

@@ -11,16 +11,16 @@ protected:
 	XMFLOAT3 m_Up;
 	XMFLOAT3 m_Look;
 	// 视锥体属性
-	float m_NearZ;
-	float m_FarZ;
-	float m_Aspect;
-	float m_FovY;
+	float m_nearZ;
+	float m_farZ;
+	float m_aspect;
+	float m_fovY;
 	float m_NearWindowHeight;
 	float m_FarWindowHeight;
 
 	// 观察矩阵和透视投影矩阵
 	XMFLOAT4X4 m_View;
-	XMFLOAT4X4 m_Proj;
+	XMFLOAT4X4 m_proj;
 
 	// 当前视口
 	D3D11_VIEWPORT m_ViewPort;

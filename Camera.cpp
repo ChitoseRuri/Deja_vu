@@ -5,9 +5,9 @@ using namespace XMF_MATH;
 Camera::Camera():
 	m_Right(0.0f, 0.0f, 0.0f),
 	m_Up(0.0f, 0.0f, 0.0f), m_Look(0.0f, 0.0f, 0.0f),
-	m_NearZ(), m_FarZ(), m_FovY(), m_Aspect(),
+	m_nearZ(), m_farZ(), m_fovY(), m_aspect(),
 	m_NearWindowHeight(), m_FarWindowHeight(),
-	m_View(), m_Proj(), m_ViewPort()
+	m_View(), m_proj(), m_ViewPort()
 {
 	setVisable(false);
 }
@@ -58,12 +58,12 @@ XMMATRIX Camera::getViewXM() const
 
 XMMATRIX Camera::getProjXM() const
 {
-	return XMLoadFloat4x4(&m_Proj);
+	return XMLoadFloat4x4(&m_proj);
 }
 
 XMMATRIX Camera::getViewProjXM() const
 {
-	return XMLoadFloat4x4(&m_View) * XMLoadFloat4x4(&m_Proj);
+	return XMLoadFloat4x4(&m_View) * XMLoadFloat4x4(&m_proj);
 }
 
 D3D11_VIEWPORT Camera::getViewPort() const
@@ -73,15 +73,15 @@ D3D11_VIEWPORT Camera::getViewPort() const
 
 void Camera::setFrustum(float fovY, float aspect, float nearZ, float farZ)
 {
-	m_FovY = fovY;
-	m_Aspect = aspect;
-	m_NearZ = nearZ;
-	m_FarZ = farZ;
+	m_fovY = fovY;
+	m_aspect = aspect;
+	m_nearZ = nearZ;
+	m_farZ = farZ;
 
-	m_NearWindowHeight = 2.0f * m_NearZ * tanf(0.5f * m_FovY);
-	m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
+	m_NearWindowHeight = 2.0f * m_nearZ * tanf(0.5f * m_fovY);
+	m_FarWindowHeight = 2.0f * m_farZ * tanf(0.5f * m_fovY);
 
-	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ));
+	XMStoreFloat4x4(&m_proj, XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ));
 }
 
 void Camera::setViewPort(const D3D11_VIEWPORT& viewPort)

@@ -30,3 +30,13 @@ void XMF_MATH::operator*=(XMFLOAT3& lhs, float f)
 {
 	lhs.x *= f, lhs.y *= f, lhs.z *= f;
 }
+
+float XMF_MATH::toRadian(float angle)
+{
+	return angle * 0.017453f;
+}
+
+float XMF_MATH::toAngle(float radian)
+{
+	return radian * 57.29578f;
+}

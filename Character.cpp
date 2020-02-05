@@ -108,5 +108,5 @@ void Character::updateSpeed(float dt)
 		m_speedVector.z += m_resistance.z;
 	}
 
-	setRect(m_location + (m_speedVector * dt));
+	setLocation(m_location + (m_speedVector * dt));
 }

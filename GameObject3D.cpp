@@ -1,17 +1,6 @@
 #include "GameObject3D.h"
 
-std::vector<GameObject3D*> GameObject3D::m_gameObjectList, GameObject3D::m_updateList, GameObject3D::m_drawList;
-ComPtr<ID3D11DeviceContext> GameObject3D::m_pd3dImmediateContext;
-
-constexpr float toRadian(float angle)
-{
-	return angle * 0.017453f;
-}
-
-constexpr float toAngle(float radian)
-{
-	return radian * 57.29578f;
-}
+std::vector<GameObject3D*> GameObject3D::m_gameObject3DList, GameObject3D::m_updateList, GameObject3D::m_drawList;
 
 using namespace XMF_MATH;
 
@@ -31,20 +20,20 @@ GameObject3D::GameObject3D() :
 {
 	// 把自己的指针放进GameObject统计列表里面
 	size_t index = -1;
-	size_t count = m_gameObjectList.size();
+	size_t count = m_gameObject3DList.size();
 	for (size_t i = 0; i < count; ++i)
 	{
-		if (m_gameObjectList[i] == nullptr)
+		if (m_gameObject3DList[i] == nullptr)
 		{
-			m_gameObjectList[i] = this;
+			m_gameObject3DList[i] = this;
 			index = i;
 			break;
 		}
 	}
 	if (index == -1)
 	{
-		m_gameObjectList.push_back(this);
-		m_gameObjectIndex = count;
+		m_gameObject3DList.push_back(this);
+		m_gameObject3DIndex = count;
 	}
 
 	setUpdateActive(true);
@@ -53,8 +42,16 @@ GameObject3D::GameObject3D() :
 
 GameObject3D::~GameObject3D()
 {
-	m_gameObjectList[m_gameObjectIndex] = nullptr;
-	m_gameObjectIndex = -1;
+	m_gameObject3DList[m_gameObject3DIndex] = nullptr;
+	m_gameObject3DIndex = -1;
+	if (m_status & Status::visable)
+	{
+		m_drawList[m_drawIndex] = nullptr;
+	}
+	if (m_status & Status::updateActive)
+	{
+		m_updateList[m_updateIndex] = nullptr;
+	}
 }
 
 void GameObject3D::init(ComPtr<ID3D11DeviceContext> pd3dImmediateContext)
@@ -84,18 +81,18 @@ void GameObject3D::drawAll()
 	}
 }
 
-const XMFLOAT3& GameObject3D::getRect() const
+const XMFLOAT3& GameObject3D::setLocation() const
 {
 	return m_location;
 }
 
-void GameObject3D::setRect(float x, float y, float z)
+void GameObject3D::setLocation(float x, float y, float z)
 {
 	m_location = { x, y, z };
 	m_trans |= Trans::locate_t;
 }
 
-void GameObject3D::setRect(const XMFLOAT3& location)
+void GameObject3D::setLocation(const XMFLOAT3& location)
 {
 	m_location = location;
 	m_trans |= Trans::locate_t;
@@ -188,25 +185,25 @@ void GameObject3D::setUpdate(bool lb)
 
 void GameObject3D::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
 {
-	m_texture = texture;
+	m_pTexture = texture;
 }
 
 auto GameObject3D::getTexture() const
 {
-	return m_texture;
+	return m_pTexture;
 }
 
 void GameObject3D::setMeshbuffer(const MeshBuffer& meshBuffer)
 {
-	m_vertexBuffer = meshBuffer.vertexBuffer;
-	m_indexBuffer = meshBuffer.indexBuffer;
+	m_pVertexBuffer = meshBuffer.vertexBuffer;
+	m_pIndexBuffer = meshBuffer.indexBuffer;
 	m_indexCount = meshBuffer.count;
 	m_vertexStride = meshBuffer.vertexStride;
 }
 
 auto GameObject3D::getMeshBuffer() const
 {
-	return MeshBuffer{ m_vertexBuffer, m_indexBuffer, m_indexCount };
+	return MeshBuffer{ m_pVertexBuffer, m_pIndexBuffer, m_indexCount };
 }
 
 void GameObject3D::update(float dt)
@@ -223,8 +220,8 @@ void GameObject3D::draw()
 	// 设置顶点/索引缓冲区
 	UINT strides = m_vertexStride;
 	UINT offsets = 0;
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &strides, &offsets);
-	m_pd3dImmediateContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &strides, &offsets);
+	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	// 获取之前已经绑定到渲染管线上的常量缓冲区并进行修改
 	ComPtr<ID3D11Buffer> cBuffer = nullptr;
@@ -237,7 +234,7 @@ void GameObject3D::draw()
 	m_pd3dImmediateContext->Unmap(cBuffer.Get(), 0);
 
 	// 设置纹理
-	m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pTexture.GetAddressOf());
 	// 可以开始绘制
 	m_pd3dImmediateContext->DrawIndexed(m_indexCount, 0, 0);
 }
@@ -302,8 +299,8 @@ void GameObject3D::setDebugObjectName(const std::string& name)
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
 	std::string vbName = name + ".VertexBuffer";
 	std::string ibName = name + ".IndexBuffer";
-	m_vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(vbName.length()), vbName.c_str());
-	m_indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(ibName.length()), ibName.c_str());
+	m_pVertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(vbName.length()), vbName.c_str());
+	m_pIndexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(ibName.length()), ibName.c_str());
 #else
 	UNREFERENCED_PARAMETER(name);
 #endif
@@ -376,18 +373,18 @@ void GameObject3D::updateLocalMatrix()
 	XMFLOAT3 rotation = m_rotation + m_rotationP;
 	XMFLOAT3 location = m_location + m_locationP;
 	XMFLOAT4X4 scaleF4 = {
-		scale.x, 0, 0, 0,
-		0, scale.y, 0, 0,
-		0, 0, scale.z, 0,
-		0,0,0,1
+		scale.x, 0.0f, 0.0f, 0.0f,
+		0.0f, scale.y, 0.0f, 0.0f,
+		0.0f, 0.0f, scale.z, 0.0f,
+		0.0f,0.0f,0.0f,1.0f
 	};
 	XMMATRIX scaleMatrix = XMLoadFloat4x4(&scaleF4);
 	XMMATRIX rotationMatrix = XMMatrixRotationX(toRadian(rotation.x)) * XMMatrixRotationY(toRadian(rotation.y)) * XMMatrixRotationZ(toRadian(rotation.z));
 	XMFLOAT4X4 locationF4 = {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		location.x, location.y, location.z, 1
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		location.x, location.y, location.z, 1.0f
 	};
 	XMMATRIX locationMatrix = XMLoadFloat4x4(&locationF4);
 	XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * locationMatrix;

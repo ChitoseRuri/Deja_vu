@@ -20,4 +20,8 @@ namespace XMF_MATH
 	XMFLOAT3 operator*(const XMFLOAT3& lhs, float f);
 
 	void operator*=(XMFLOAT3& lhs, float f);
+
+	float toRadian(float angle);
+
+	float toAngle(float radian);
 }

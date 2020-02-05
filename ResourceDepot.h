@@ -12,7 +12,7 @@ private:
 	std::vector<ComPtr<ID3D11ShaderResourceView>> m_shaderResource;
 	std::map<std::wstring, size_t> m_shaderResourceMap;
 
-	std::vector<ComPtr<ID3D11Buffer>> m_vertexBuffer, m_indexBuffer;
+	std::vector<ComPtr<ID3D11Buffer>> m_pVertexBuffer, m_pIndexBuffer;
 	std::vector<size_t> m_vertexIndexCount, m_vertexStride;
 	std::map<std::wstring, size_t> m_meshMap;
 
@@ -20,6 +20,7 @@ protected:
 public:
 	ResourceDepot();
 	~ResourceDepot();
+
 
 	ComPtr<ID3D11ShaderResourceView> getShaderResource(size_t index) const;
 	ComPtr<ID3D11ShaderResourceView> getShaderResource(const std::wstring& name) const;
@@ -29,6 +30,8 @@ public:
 	size_t loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name = L"");//DDS贴图读取
 	template<class VertexType, class IndexType>
 	size_t loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, std::wstring name = L"");// 针对Geometry类的读取
+	size_t loadImage(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name = L"");	// 读取图片
+
 };
 
 template<class VertexType, class IndexType>
@@ -63,9 +66,9 @@ inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry:
 	InitData.pSysMem = meshData.indexVec.data();
 	HR(pDevice->CreateBuffer(&ibd, &InitData, indexBuffer.GetAddressOf()));
 
-	size_t index = m_vertexBuffer.size();
-	m_vertexBuffer.push_back(vertexBuffer);
-	m_indexBuffer.push_back(indexBuffer);
+	size_t index = m_pVertexBuffer.size();
+	m_pVertexBuffer.push_back(vertexBuffer);
+	m_pIndexBuffer.push_back(indexBuffer);
 	m_vertexIndexCount.push_back(indexCount);
 	m_vertexStride.push_back(vertexStride);
 	if (!name.empty())

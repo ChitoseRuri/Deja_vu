@@ -9,6 +9,7 @@
 #include "ResourceDepot.h"
 #include "Character.h"
 #include "Label.h"
+#include "Image.h"
 
 class GameApp : public D3DApp
 {
@@ -67,9 +68,9 @@ private:
 	ComPtr<ID3D11VertexShader> m_pVertexShader2D;				// 用于2D的顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader2D;				    // 用于2D的像素着色器
 
-	CBCamera m_CBFrame;							    // 该缓冲区存放仅在每一帧进行更新的变量
-	CBChangesOnResize m_CBOnResize;							    // 该缓冲区存放仅在窗口大小变化时更新的变量
-	CBLights m_CBRarely;								    // 该缓冲区存放不会再进行修改的变量
+	CBCamera m_CBFrame;											// 该缓冲区存放仅在每一帧进行更新的变量
+	CBChangesOnResize m_CBOnResize;								// 该缓冲区存放仅在窗口大小变化时更新的变量
+	CBLights m_CBRarely;										// 该缓冲区存放不会再进行修改的变量
 
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
@@ -77,6 +78,7 @@ private:
 	ResourceDepot m_resourceDepot;
 	Character m_character;
 	Label m_label;
+	Image m_image;
 };
 
 
