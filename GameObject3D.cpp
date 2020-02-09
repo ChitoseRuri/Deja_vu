@@ -217,6 +217,9 @@ void GameObject3D::update(float dt)
 
 void GameObject3D::draw()
 {
+	if (!m_pVertexBuffer || !m_pTexture)
+		return;
+
 	// 设置顶点/索引缓冲区
 	UINT strides = m_vertexStride;
 	UINT offsets = 0;

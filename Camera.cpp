@@ -163,3 +163,8 @@ void Camera::update(float dt)
 		child->update(dt);
 	}
 }
+
+const CBWorld& Camera::getWorldCB() const
+{
+	return m_cbWorld;
+}

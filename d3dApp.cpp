@@ -103,9 +103,6 @@ int D3DApp::Run()
 
 bool D3DApp::Init()
 {
-	m_pMouse = std::make_shared<DirectX::Mouse>();
-	m_pKeyboard = std::make_shared<DirectX::Keyboard>();
-
 	if (!InitMainWindow())
 		return false;
 
@@ -325,19 +322,19 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHOVER:
 	case WM_MOUSEMOVE:
-		m_pMouse->ProcessMessage(msg, wParam, lParam);
+		//m_pMouse->ProcessMessage(msg, wParam, lParam);
 		return 0;
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
+		//m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
 
 	case WM_ACTIVATEAPP:
-		m_pMouse->ProcessMessage(msg, wParam, lParam);
-		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
+		//m_pMouse->ProcessMessage(msg, wParam, lParam);
+		//m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}
 

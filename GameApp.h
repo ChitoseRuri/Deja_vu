@@ -7,9 +7,11 @@
 #include "LightHelper.h"
 #include "Camera.h"
 #include "ResourceDepot.h"
-#include "Character.h"
+#include "RenderStates.h"
+#include "Car.h"
 #include "Label.h"
 #include "Image.h"
+#include "SkyBox.h"
 
 class GameApp : public D3DApp
 {
@@ -67,6 +69,8 @@ private:
 	ComPtr<ID3D11PixelShader> m_pPixelShader3D;				    // 用于3D的像素着色器
 	ComPtr<ID3D11VertexShader> m_pVertexShader2D;				// 用于2D的顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader2D;				    // 用于2D的像素着色器
+	ComPtr<ID3D11VertexShader> m_pVertexShaderSky;				// 用于天空盒的顶点着色器
+	ComPtr<ID3D11PixelShader> m_pPixelShaderSky;				// 用于天空盒的像素着色器
 
 	CBCamera m_CBFrame;											// 该缓冲区存放仅在每一帧进行更新的变量
 	CBChangesOnResize m_CBOnResize;								// 该缓冲区存放仅在窗口大小变化时更新的变量
@@ -75,10 +79,11 @@ private:
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
-	ResourceDepot m_resourceDepot;
-	Character m_character;
+	
+	Car m_car;
 	Label m_label;
 	Image m_image;
+	SkyBox m_sky;
 };
 
 

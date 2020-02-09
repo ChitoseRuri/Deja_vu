@@ -1,14 +1,12 @@
 #include "GameObject2D.h"
 
 
-bool DEPTH::operator<(const DEPTH& rhs)const
-{
-	return depth > rhs.depth;
-}
+
 
 std::vector<GameObject2D*> GameObject2D::m_gameObject2DList;
 std::vector<GameObject2D*> GameObject2D::m_updateList;
-std::multimap<DEPTH, GameObject2D*> GameObject2D::m_drawMap;
+std::multimap<GameObject2D::DEPTH, GameObject2D*> GameObject2D::m_drawMap;
+
 float GameObject2D::m_viewWidth = 0.0f;
 float GameObject2D::m_viewHeight = 0.0f;
 
@@ -16,7 +14,7 @@ GameObject2D::GameObject2D():
 	m_rect{ 0.0f, 0.0f, 0.0f, 0.0f },
 	m_depth(0.0f),
 	m_status(NULL),
-	m_status2D(NULL),
+	m_status2D(Status2D::null),
 	m_selectFunction(nullptr),
 	m_pressFunction(nullptr),
 	m_releaseFunction(nullptr),
@@ -161,6 +159,32 @@ bool GameObject2D::getActive() const
 	return m_status & Status::updateActive;
 }
 
+void GameObject2D::setStatus2D(Status2D status)
+{
+	m_status2D = status;
+	switch (status)
+	{
+	case Status2D::null:
+		break;
+	case Status2D::selected:
+		m_selectFunction();
+		break;
+	case Status2D::pressed:
+		m_pressFunction();
+		break;
+	case Status2D::released:
+		m_releaseFunction();
+		break;
+	default:
+		break;
+	}
+}
+
+Status2D GameObject2D::getStatus2D() const
+{
+	return m_status2D;
+}
+
 void GameObject2D::setSelectFunction(std::function<void()> pf)
 {
 	m_selectFunction = pf;
@@ -211,4 +235,9 @@ void GameObject2D::drawAll()
 		itr->second->draw();
 		++itr;
 	}
+}
+
+bool GameObject2D::DEPTH::operator<(const DEPTH& rhs) const
+{
+	return depth > rhs.depth;
 }

@@ -9,17 +9,25 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 using namespace DirectX;
 
-struct DEPTH
+enum class Status2D:char
 {
-	float depth;
-
-	bool operator<(const DEPTH& rhs) const;
+	null = 0,
+	selected = 1,
+	pressed = 1 << 1,
+	released = 1 << 2
 };
 
 class GameObject2D:
 	public GameObject
 {
 private:
+	struct DEPTH
+	{
+		float depth;
+
+		bool operator<(const DEPTH& rhs) const;
+	};
+
 	static std::vector<GameObject2D*> m_gameObject2DList;
 	static std::vector<GameObject2D*> m_updateList;
 	static std::multimap<DEPTH, GameObject2D*> m_drawMap;
@@ -28,15 +36,11 @@ private:
 protected:
 	static float m_viewWidth, m_viewHeight;
 
-	enum Status2D
-	{
-		selected = 1,
-		pressed = 1 << 1,
-		released = 1 << 2
-	};
+
 	D2D1_RECT_F m_rect;
 	float m_depth;
-	UINT32 m_status, m_status2D;
+	UINT32 m_status;
+	Status2D m_status2D;
 	std::function<void()> m_selectFunction, m_pressFunction, m_releaseFunction;
 
 public:
@@ -58,6 +62,9 @@ public:
 
 	void setActive(bool lb);
 	bool getActive() const;
+
+	void setStatus2D(Status2D status);
+	Status2D getStatus2D() const;
 
 	void setSelectFunction(std::function<void()> pf);
 	auto getSelectFunction() const;

@@ -63,5 +63,7 @@ public:
 	void lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, const DirectX::XMFLOAT3& up);
 
 	void update(float dt) override;
+
+	const CBWorld& getWorldCB() const;// 
 };
 

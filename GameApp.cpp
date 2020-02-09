@@ -20,6 +20,7 @@ bool GameApp::Init()
 	if (!D3DApp::Init())
 		return false;
 
+	RenderStates::InitAll(m_pd3dDevice.Get());
 	GameObject2D::init(m_pd2dRenderTarget, m_pdwriteFactory);
 	GameObject3D::init(m_pd3dImmediateContext);
 	Image::init(m_pd3dDevice.Get());
@@ -29,10 +30,6 @@ bool GameApp::Init()
 
 	if (!InitResource())
 		return false;
-
-	// 初始化鼠标，键盘不需要
-	m_pMouse->SetWindow(m_hMainWnd);
-	m_pMouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
 
 	return true;
 }
@@ -91,13 +88,6 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {
-	// 更新鼠标事件，获取相对偏移量
-	Mouse::State mouseState = m_pMouse->GetState();
-	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
-
-	Keyboard::State keyState = m_pKeyboard->GetState();
-	m_KeyboardTracker.Update(keyState);
-
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
@@ -110,11 +100,6 @@ void GameApp::UpdateScene(float dt)
 
 	GameObject3D::updateAll(dt);
 	m_image.setRotation(m_image.getRoation() + 90.0f * dt);
-	// 重置滚轮值
-	m_pMouse->ResetScrollWheelValue();
-	// 退出程序，这里应向窗口发送销毁信息
-	if (keyState.IsKeyDown(Keyboard::Escape))
-		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
 }
 
 void GameApp::DrawScene()
@@ -127,12 +112,19 @@ void GameApp::DrawScene()
 
 	// 设定输入布局
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout3D.Get());
-	// 绑定各自所需的缓冲区，其中每帧更新的缓冲区需要绑定到两个缓冲区上
 	// 绑定3D着色器
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader3D.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader3D.Get(), nullptr, 0);
+	m_pd3dImmediateContext->RSSetState(RenderStates::RSNormal.Get());
 
 	GameObject3D::drawAll();
+
+	m_pd3dImmediateContext->VSSetShader(m_pVertexShaderSky.Get(), nullptr, 0);
+	m_pd3dImmediateContext->PSSetShader(m_pPixelShaderSky.Get(), nullptr, 0);
+	m_pd3dImmediateContext->RSSetState(RenderStates::RSNoCull.Get());
+
+	m_sky.draw(m_pd3dImmediateContext.Get(), m_pCamera->getWorldCB());
+
 
 	if (m_pd2dRenderTarget != nullptr)
 	{
@@ -175,6 +167,18 @@ bool GameApp::InitEffect()
 	HR(CreateShaderFromFile(L"HLSL\\Basic_PS_3D.cso", L"HLSL\\Basic_PS_3D.hlsl", "PS_3D", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader3D.GetAddressOf()));
 
+	// 创建顶点着色器(sky)
+	HR(CreateShaderFromFile(L"HLSL\\Sky_VS_3D.cso", L"HLSL\\Sky_VS_3D.hlsl", "VS_Sky", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShaderSky.GetAddressOf()));
+
+	// 创建像素着色器(sky)
+	HR(CreateShaderFromFile(L"HLSL\\Sky_PS_3D.cso", L"HLSL\\Sky_PS_3D.hlsl", "PS_Sky", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShaderSky.GetAddressOf()));
+
+	m_pd3dImmediateContext->PSSetSamplers(0, 1, RenderStates::SSAnistropicWrap.GetAddressOf());// 各项异性过滤
+	m_pd3dImmediateContext->OMSetDepthStencilState(RenderStates::DSSLessEqual.Get(), NULL);// 允许写入深度值相等的颜色
+	m_pd3dImmediateContext->OMSetBlendState(RenderStates::BSTransparent.Get(), nullptr, 0XFFFFFFFF);// 设置透明混合
+
 	return true;
 }
 
@@ -200,38 +204,40 @@ bool GameApp::InitResource()
 	// ******************
 	// 初始化常量缓冲区的值
 	// 初始化每帧可能会变化的值
-	m_pCamera = m_character.getCamera();
+	m_pCamera = m_car.getCamera();
 	m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 
 	// 初始化仅在窗口大小变动时修改的值
 	m_pCamera->setFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
 	m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->getProjXM());
 
+	// 初始化天空盒
+	m_sky.init(m_pd3dDevice.Get(), L"TexTure\\daylight.jpg");
 	// ******************
 	// 初始化游戏对象
 	size_t index;
 	// 初始化测试木箱
-	index = m_resourceDepot.loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds");
-	m_WoodCrate1.setTexture(m_resourceDepot.getShaderResource(index));
-	m_WoodCrate2.setTexture(m_resourceDepot.getShaderResource(index));
-	index = m_resourceDepot.loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
-	m_WoodCrate1.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
-	m_WoodCrate2.setMeshbuffer(m_resourceDepot.getMeshBuffer(index));
-	m_WoodCrate1.setLocation(0.0f, 1.0f, 0.0f);
+	index = ResourceDepot::loadDDSTesture(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds");
+	m_WoodCrate1.setTexture(ResourceDepot::getShaderResource(index));
+	m_WoodCrate2.setTexture(ResourceDepot::getShaderResource(index));
+	index = ResourceDepot::loadGeometry(m_pd3dDevice.Get(), Geometry::CreateBox());
+	m_WoodCrate1.setMeshbuffer(ResourceDepot::getMeshBuffer(index));
+	m_WoodCrate2.setMeshbuffer(ResourceDepot::getMeshBuffer(index));
+	m_WoodCrate1.setLocation(0.0f, 1.0f, 1.0f);
 	m_WoodCrate1.addChild(&m_WoodCrate2);
 	m_WoodCrate2.setScale(0.5f, 0.5f, 1.0f);
 	m_WoodCrate2.setLocation(-1.0f, -1.0f, 0.0f);
 	m_WoodCrate1.setRotation(0.f, 0.f, 45.f);
 	m_WoodCrate2.setRotation(0.f, 0.f, 45.f);
-	
+	m_car.init(m_pd3dDevice.Get());
 	// 2D测试
 	m_label.setText(L"Fubuki hasihasi");
 	m_label.setRect(0.0f, 0.0f, 100.0f, 100.0f);
 	m_label.setTextColor(D2D1::ColorF::Yellow);
 	m_label.setTextFormat(L"normal", L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn");
-	index = m_resourceDepot.loadImage(m_pd3dDevice.Get(), L"Texture\\san.png", L"san");
-	m_image.setTexture(m_resourceDepot.getShaderResource(index));
+	index = ResourceDepot::loadImage(m_pd3dDevice.Get(), L"Texture\\san.png", L"san");
+	m_image.setTexture(ResourceDepot::getShaderResource(index));
 	m_image.setRect(0.0f, 0.0f, 100.0f, 100.0f);
 	m_label.setDepth(0.1f);
 	m_image.setDepth(0.2f);

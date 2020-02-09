@@ -58,7 +58,7 @@ auto Image::getTexture() const
 
 void Image::setRotation(float rotation)
 {
-	m_rotation = rotation;
+	m_rotation = (rotation > 0) ? (rotation > 360.0f ? rotation - 360.0f : rotation) : (rotation < -360.0f ? rotation + 360.0f : rotation);
 	updateLocalMatrix();
 }
 

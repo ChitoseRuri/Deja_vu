@@ -136,6 +136,8 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Canvas.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="d3dApp.h" />
     <ClInclude Include="d3dUtil.h" />
@@ -152,8 +154,11 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="RenderStates.h" />
     <ClInclude Include="ResourceDepot.h" />
     <ClInclude Include="Sence.h" />
+    <ClInclude Include="Sence_MainMenu.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Vertex.h" />
@@ -163,6 +168,8 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
@@ -178,8 +185,11 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ResourceDepot.cpp" />
     <ClCompile Include="Sence.cpp" />
+    <ClCompile Include="Sence_MainMenu.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Vertex.cpp" />
@@ -187,6 +197,18 @@
     <ClCompile Include="XMF_MATH.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="HLSL\Sky_PS_3D.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS_Sky</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky_VS_3D.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS_Sky</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+    </FxCompile>
     <None Include="HLSL\Basic.hlsli">
       <FileType>Document</FileType>
     </None>

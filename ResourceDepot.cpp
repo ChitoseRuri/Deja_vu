@@ -1,29 +1,38 @@
 #include "ResourceDepot.h"
 
-ResourceDepot::ResourceDepot()
-{
-}
+std::vector<ComPtr<ID3D11ShaderResourceView>> ResourceDepot::m_shaderResource;
+std::map<std::wstring, size_t> ResourceDepot::m_shaderResourceMap;
 
-ResourceDepot::~ResourceDepot()
-{
-}
+std::vector<ComPtr<ID3D11Buffer>> ResourceDepot::m_pVertexBuffer;
+std::vector<ComPtr<ID3D11Buffer>> ResourceDepot::m_pIndexBuffer;
+std::vector<size_t> ResourceDepot::m_vertexIndexCount;
+std::vector<size_t> ResourceDepot::m_vertexStride;
+std::map<std::wstring, size_t> ResourceDepot::m_meshMap;
 
-ComPtr<ID3D11ShaderResourceView> ResourceDepot::getShaderResource(size_t index) const
+ComPtr<ID3D11ShaderResourceView> ResourceDepot::getShaderResource(size_t index)
 {
 	return m_shaderResource[index];
 }
 
-ComPtr<ID3D11ShaderResourceView> ResourceDepot::getShaderResource(const std::wstring& name) const
+ComPtr<ID3D11ShaderResourceView> ResourceDepot::getShaderResource(const std::wstring& name)
 {
 	return m_shaderResource[m_shaderResourceMap.find(name)->second];
 }
 
-MeshBuffer ResourceDepot::getMeshBuffer(size_t index) const
+size_t ResourceDepot::addShaderResource(ComPtr<ID3D11ShaderResourceView> pSRV, std::wstring name)
+{
+	size_t index = m_shaderResource.size();
+	m_shaderResource.push_back(pSRV);
+	m_shaderResourceMap.insert(std::make_pair(std::move(name), index));
+	return index;
+}
+
+MeshBuffer ResourceDepot::getMeshBuffer(size_t index)
 {
 	return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
 }
 
-MeshBuffer ResourceDepot::getMeshBuffer(const std::wstring& name) const
+MeshBuffer ResourceDepot::getMeshBuffer(const std::wstring& name)
 {
 	size_t index = m_meshMap.find(name)->second;
 	return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };

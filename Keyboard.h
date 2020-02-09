@@ -1,34 +1,13 @@
-//--------------------------------------------------------------------------------------
-// File: Keyboard.h
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
-//--------------------------------------------------------------------------------------
-
 #pragma once
 
 #include <windows.h>
 #include <memory>
 #include <stdint.h>
 
-namespace DirectX
+class Keyboard
 {
-	class Keyboard
-	{
-	public:
-		Keyboard() noexcept(false);
-		Keyboard(Keyboard&& moveFrom) noexcept;
-		Keyboard& operator= (Keyboard&& moveFrom) noexcept;
-
-		Keyboard(Keyboard const&) = delete;
-		Keyboard& operator=(Keyboard const&) = delete;
-
-		virtual ~Keyboard();
-
-		enum Keys
+private:
+	enum Keys
 		{
 			None = 0,
 
@@ -208,7 +187,7 @@ namespace DirectX
 			OemClear = 0xfe,
 		};
 
-		struct State
+	struct State
 		{
 			bool Reserved0 : 8;
 			bool Back : 1;              // VK_BACK, 0x8
@@ -417,49 +396,8 @@ namespace DirectX
 				return false;
 			}
 		};
+protected:
+public:
 
-		class KeyboardStateTracker
-		{
-		public:
-			State released;
-			State pressed;
-
-#pragma prefast(suppress: 26495, "Reset() performs the initialization")
-			KeyboardStateTracker() noexcept { Reset(); }
-
-			void __cdecl Update(const State& state);
-
-			void __cdecl Reset() noexcept;
-
-			bool __cdecl IsKeyPressed(Keys key) const { return pressed.IsKeyDown(key); }
-			bool __cdecl IsKeyReleased(Keys key) const { return released.IsKeyDown(key); }
-
-			State __cdecl GetLastState() const { return lastState; }
-
-		public:
-			State lastState;
-		};
-
-		// Retrieve the current state of the keyboard
-		State __cdecl GetState() const;
-
-		// Reset the keyboard state
-		void __cdecl Reset();
-
-		// Feature detection
-		bool __cdecl IsConnected() const;
-
-#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP) && defined(WM_USER)
-		static void __cdecl ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
-#endif
-
-		// Singleton
-		static Keyboard& __cdecl Get();
-
-	private:
-		// Private implementation.
-		class Impl;
-
-		std::unique_ptr<Impl> pImpl;
-	};
-}
+		
+};

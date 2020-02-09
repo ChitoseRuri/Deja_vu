@@ -13,6 +13,12 @@
     <FxCompile Include="HLSL\Basic_VS_3D.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\Sky_VS_3D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky_PS_3D.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -86,6 +92,21 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Current\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>2D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Sence_MainMenu.cpp">
+      <Filter>Sence\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>3D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>Current\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>3D\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +184,21 @@
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Current\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>2D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Sence_MainMenu.h">
+      <Filter>Sence\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>3D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Current\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>3D\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
