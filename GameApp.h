@@ -81,8 +81,7 @@ private:
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
 	
 	Car m_car;
-	Label m_label;
-	Image m_image;
+	Button m_button;
 	SkyBox m_sky;
 };
 

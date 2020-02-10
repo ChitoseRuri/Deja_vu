@@ -1,6 +1,7 @@
 #pragma once
 #include "Mouse.h"
 #include "Keyboard.h"
+#include "Canvas.h"
 #include <d3d11.h>
 
 class Sence

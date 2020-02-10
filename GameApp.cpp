@@ -99,7 +99,6 @@ void GameApp::UpdateScene(float dt)
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
 	GameObject3D::updateAll(dt);
-	m_image.setRotation(m_image.getRoation() + 90.0f * dt);
 }
 
 void GameApp::DrawScene()
@@ -231,16 +230,14 @@ bool GameApp::InitResource()
 	m_WoodCrate2.setRotation(0.f, 0.f, 45.f);
 	m_car.init(m_pd3dDevice.Get());
 	// 2D测试
-	m_label.setText(L"Fubuki hasihasi");
-	m_label.setRect(0.0f, 0.0f, 100.0f, 100.0f);
-	m_label.setTextColor(D2D1::ColorF::Yellow);
-	m_label.setTextFormat(L"normal", L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
+	m_button.getLabel().setText(L"Fubuki hasihasi");
+	m_button.setRect(0.0f, 0.0f, 100.0f, 100.0f);
+	m_button.getLabel().setTextColor(D2D1::ColorF::Yellow);
+	m_button.getLabel().setTextFormat(L"normal", L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn");
 	index = ResourceDepot::loadImage(m_pd3dDevice.Get(), L"Texture\\san.png", L"san");
-	m_image.setTexture(ResourceDepot::getShaderResource(index));
-	m_image.setRect(0.0f, 0.0f, 100.0f, 100.0f);
-	m_label.setDepth(0.1f);
-	m_image.setDepth(0.2f);
+	m_button.getImage().setTexture(ResourceDepot::getShaderResource(index));
+	m_button.setDepth(0.1f);
 
 	// 初始化采样器状态
 	D3D11_SAMPLER_DESC sampDesc;

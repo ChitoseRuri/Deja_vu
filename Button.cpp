@@ -3,6 +3,8 @@
 Button::Button()
 {
 	m_label.setText(L"Button");
+	m_label.setVisable(false);
+	m_image.setVisable(false);
 }
 
 Button::~Button()
@@ -37,4 +39,6 @@ void Button::update(float dt)
 
 void Button::draw()
 {
+	m_image.draw();
+	m_label.draw();
 }
