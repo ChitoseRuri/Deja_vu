@@ -36,6 +36,15 @@ public:
 template<class VertexType, class IndexType>
 static inline size_t ResourceDepot::loadGeometry(ID3D11Device* pDevice, const Geometry::MeshData<VertexType, IndexType>& meshData, std::wstring name)
 {
+	if (!name.empty())
+	{
+		auto itr = m_meshMap.find(name);
+		if (itr != m_meshMap.end())
+		{
+			return itr->second;
+		}
+	}
+
 	ComPtr<ID3D11Buffer> vertexBuffer, indexBuffer;
 
 	// 设置顶点缓冲区描述

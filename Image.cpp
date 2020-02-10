@@ -5,8 +5,9 @@ using namespace XMF_MATH;
 ComPtr<ID3D11Buffer> Image::m_pVertexBuffer = nullptr;
 ComPtr<ID3D11Buffer> Image::m_pIndexBuffer = nullptr;
 
-Image::Image():
-	m_pTexture(nullptr)
+Image::Image() :
+	m_pTexture(nullptr),
+	m_rotation(0.0f)
 {
 }
 
@@ -46,7 +47,7 @@ void Image::init(ID3D11Device* pDevice)
 	HR(pDevice->CreateBuffer(&ibd, &InitData, m_pIndexBuffer.GetAddressOf()));
 }
 
-void Image::setTexture(ComPtr<ID3D11ShaderResourceView> texture)
+void Image::setSRV(ComPtr<ID3D11ShaderResourceView> texture)
 {
 	m_pTexture = texture;
 }

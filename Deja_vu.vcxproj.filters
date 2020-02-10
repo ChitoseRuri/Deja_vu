@@ -108,6 +108,9 @@
     <ClCompile Include="SkyBox.cpp">
       <Filter>3D\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Sence_DriverTest.cpp">
+      <Filter>Sence\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -199,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="SkyBox.h">
       <Filter>3D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Sence_DriverTest.h">
+      <Filter>Sence\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,5 @@
 #include "GameObject2D.h"
 
-
-
-
 std::vector<GameObject2D*> GameObject2D::m_gameObject2DList;
 std::vector<GameObject2D*> GameObject2D::m_updateList;
 std::multimap<GameObject2D::DEPTH, GameObject2D*> GameObject2D::m_drawMap;
@@ -14,12 +11,9 @@ GameObject2D::GameObject2D():
 	m_rect{ 0.0f, 0.0f, 0.0f, 0.0f },
 	m_depth(0.0f),
 	m_status(NULL),
-	m_status2D(Status2D::null),
-	m_selectFunction(nullptr),
-	m_pressFunction(nullptr),
-	m_releaseFunction(nullptr),
 	m_updateIndex(-1),
-	m_gameObject2DIndex(m_gameObject2DList.size())
+	m_gameObject2DIndex(m_gameObject2DList.size()),
+	m_updateFunction(nullptr)
 {
 	setVisable(true);
 	setActive(true);
@@ -159,68 +153,19 @@ bool GameObject2D::getActive() const
 	return m_status & Status::updateActive;
 }
 
-void GameObject2D::setStatus2D(Status2D status)
+void GameObject2D::setUpdateFunction(std::function<void(float dt)> pf)
 {
-	m_status2D = status;
-	switch (status)
-	{
-	case Status2D::null:
-		break;
-	case Status2D::selected:
-		m_selectFunction();
-		break;
-	case Status2D::pressed:
-		m_pressFunction();
-		break;
-	case Status2D::released:
-		m_releaseFunction();
-		break;
-	default:
-		break;
-	}
+	m_updateFunction = pf;
 }
 
-Status2D GameObject2D::getStatus2D() const
+auto GameObject2D::getUpdateFunction() const
 {
-	return m_status2D;
-}
-
-void GameObject2D::setSelectFunction(std::function<void()> pf)
-{
-	m_selectFunction = pf;
-}
-
-auto GameObject2D::getSelectFunction() const
-{
-	return m_selectFunction;
-}
-
-void GameObject2D::setPressFunction(std::function<void()> pf)
-{
-	m_pressFunction = pf;
-}
-
-auto GameObject2D::getPressFunction() const
-{
-	return m_pressFunction;
-}
-
-void GameObject2D::setReleaseFunction(std::function<void()> pf)
-{
-	m_releaseFunction = pf;
-}
-
-auto GameObject2D::getReleaseFunction() const
-{
-	return m_releaseFunction;
+	return m_updateFunction;
 }
 
 void GameObject2D::update(float dt)
 {
-}
-
-void GameObject2D::draw()
-{
+	m_updateFunction(dt);
 }
 
 void GameObject2D::updateAll(float dt)

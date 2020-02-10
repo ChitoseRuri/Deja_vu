@@ -12,6 +12,8 @@
 #include "Label.h"
 #include "Image.h"
 #include "SkyBox.h"
+#include "Sence_MainMenu.h"
+#include "Sence_DriverTest.h"
 
 class GameApp : public D3DApp
 {
@@ -79,9 +81,8 @@ private:
 	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
-	
-	Car m_car;
-	Button m_button;
+	std::shared_ptr<Sence> m_pSence;							// 场景指针
+
 	SkyBox m_sky;
 };
 

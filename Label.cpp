@@ -7,6 +7,17 @@ Label::Label() :
 	m_text(L"Label")
 {
 	m_rect = {0.0f, 100.0f, 600.0f, 200.0f};
+	setTextColor(D2D1::ColorF::Black);
+	if (m_textFormatMap.empty())
+	{
+		setTextFormat(L"default", L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
+			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn");
+	}
+	else
+	{
+		setTextFormat(L"default");
+	}
+	
 }
 
 Label::~Label()

@@ -157,6 +157,7 @@
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="ResourceDepot.h" />
     <ClInclude Include="Sence.h" />
+    <ClInclude Include="Sence_DriverTest.h" />
     <ClInclude Include="Sence_MainMenu.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Text.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ResourceDepot.cpp" />
     <ClCompile Include="Sence.cpp" />
+    <ClCompile Include="Sence_DriverTest.cpp" />
     <ClCompile Include="Sence_MainMenu.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Text.cpp" />

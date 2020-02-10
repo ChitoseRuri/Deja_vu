@@ -40,10 +40,19 @@ MeshBuffer ResourceDepot::getMeshBuffer(const std::wstring& name)
 
 size_t ResourceDepot::loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name)
 {
-	ComPtr<ID3D11ShaderResourceView> texture;
-	HR(CreateDDSTextureFromFile(pDevice, fileName, nullptr, texture.ReleaseAndGetAddressOf()));
+	if (!name.empty())
+	{
+		auto itr = m_shaderResourceMap.find(name);
+		if (itr != m_shaderResourceMap.end()) // 这个名字的srv已经存在，直接返回
+		{
+			return itr->second;
+		}
+	}
+
+	ComPtr<ID3D11ShaderResourceView> pSRV;
+	HR(CreateDDSTextureFromFile(pDevice, fileName, nullptr, pSRV.ReleaseAndGetAddressOf()));
 	size_t index = m_shaderResource.size();
-	m_shaderResource.push_back(texture);
+	m_shaderResource.push_back(pSRV);
 	if (!name.empty())
 	{
 		m_shaderResourceMap.insert(std::make_pair(std::move(name), index));
@@ -53,6 +62,15 @@ size_t ResourceDepot::loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileN
 
 size_t ResourceDepot::loadImage(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name)
 {
+	if (!name.empty())
+	{
+		auto itr = m_shaderResourceMap.find(name);
+		if (itr != m_shaderResourceMap.end()) // 这个名字的srv已经存在，直接返回
+		{
+			return itr->second;
+		}
+	}
+
 	ComPtr <ID3D11ShaderResourceView> texture;
 	CreateWICTextureFromFile(pDevice, fileName, nullptr, texture.GetAddressOf());
 	size_t index = m_shaderResource.size();

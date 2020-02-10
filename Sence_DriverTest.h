@@ -1,22 +1,14 @@
 #pragma once
 #include "Sence.h"
-#include "Sence_DriverTest.h"
-#include "Car.h"
 
-class Sence_MainMenu :
-	public Sence
+class Sence_DriverTest :
+	public Sence 
 {
 private:
-	Label m_title;
-	Button m_buttonChangeSence;
-
-	std::shared_ptr<Camera> m_pCamera;
-	
-
 protected:
 public:
-	Sence_MainMenu();
-	~Sence_MainMenu();
+	Sence_DriverTest();
+	~Sence_DriverTest();
 
 	bool initResource(ID3D11Device* pDevice) override;
 	bool initEffect(ID3D11Device* pDevice) override;

@@ -21,7 +21,7 @@ public:
 
 	static void init(ID3D11Device* pDevice);
 
-	void setTexture(ComPtr<ID3D11ShaderResourceView> texture);
+	void setSRV(ComPtr<ID3D11ShaderResourceView> texture);
 	auto getTexture() const;
 
 	void setRotation(float rotation);

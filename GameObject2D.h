@@ -9,14 +9,6 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 using namespace DirectX;
 
-enum class Status2D:char
-{
-	null = 0,
-	selected = 1,
-	pressed = 1 << 1,
-	released = 1 << 2
-};
-
 class GameObject2D:
 	public GameObject
 {
@@ -36,12 +28,10 @@ private:
 protected:
 	static float m_viewWidth, m_viewHeight;
 
-
 	D2D1_RECT_F m_rect;
 	float m_depth;
 	UINT32 m_status;
-	Status2D m_status2D;
-	std::function<void()> m_selectFunction, m_pressFunction, m_releaseFunction;
+	std::function<void(float dt)> m_updateFunction;
 
 public:
 	GameObject2D();
@@ -63,19 +53,10 @@ public:
 	void setActive(bool lb);
 	bool getActive() const;
 
-	void setStatus2D(Status2D status);
-	Status2D getStatus2D() const;
+	void setUpdateFunction(std::function<void(float dt)> pf);
+	auto getUpdateFunction() const;
 
-	void setSelectFunction(std::function<void()> pf);
-	auto getSelectFunction() const;
-
-	void setPressFunction(std::function<void()> pf);
-	auto getPressFunction() const;
-
-	void setReleaseFunction(std::function<void()> pf);
-	auto getReleaseFunction() const;
-
-	virtual void update(float dt) = NULL;
+	virtual void update(float dt);
 	virtual void draw() = NULL;
 
 	static void updateAll(float dt);
