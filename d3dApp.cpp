@@ -326,8 +326,12 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_KEYDOWN:
+		m_keyboard.keyDown(static_cast<Keyboard::Keys>(wParam));
+		return 0;
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
+		m_keyboard.keyUp(static_cast<Keyboard::Keys>(wParam));
+		return 0;
 	case WM_SYSKEYUP:
 		//m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
@@ -557,9 +561,6 @@ bool D3DApp::InitDirect3D()
 
 	return true;
 }
-
-
-
 
 void D3DApp::CalculateFrameStats()
 {

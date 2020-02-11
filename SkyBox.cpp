@@ -49,7 +49,7 @@ void SkyBox::loadImageTexture(ID3D11Device* pDevice,  std::wstring fileName)
 	constexpr float hp = 1.0f / 3.0f;
 	constexpr float wp = 1.0f / 4.0f;
 
-	auto meshData = Geometry::CreateBox(100.0f, 100.0f, 100.0f);
+	auto meshData = Geometry::CreateBox();
 	auto& vertexDataArr = meshData.vertexVec;
 
 	// 右面(+X面)

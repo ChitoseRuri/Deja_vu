@@ -44,7 +44,7 @@ public:
 	virtual void setRect(float left, float top, float right, float bottom);
 	const D2D1_RECT_F& getRect() const;
 
-	void setDepth(float depth);
+	virtual void setDepth(float depth);
 	auto getDepth() const;
 
 	void setVisable(bool lb);

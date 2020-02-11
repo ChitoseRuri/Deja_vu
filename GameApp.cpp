@@ -82,7 +82,8 @@ void GameApp::OnResize()
 }
 
 void GameApp::UpdateScene(float dt)
-{
+{	
+	m_pSence->keyboardInput(m_keyboard);
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
@@ -94,6 +95,8 @@ void GameApp::UpdateScene(float dt)
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
 	GameObject3D::updateAll(dt);
+
+	m_keyboard.update();// 最后更新键盘
 }
 
 void GameApp::DrawScene()
@@ -129,7 +132,6 @@ void GameApp::DrawScene()
 		m_pd3dImmediateContext->PSSetShader(m_pPixelShader2D.Get(), nullptr, 0);
 
 		GameObject2D::drawAll();
-		m_pSence->draw();
 	}
 
 	HR(m_pSwapChain->Present(0, 0));
@@ -210,9 +212,16 @@ bool GameApp::InitResource()
 	m_pSence->initResource(m_pd3dDevice.Get());
 
 	m_pSence->setSenceChangeFunction([&](std::shared_ptr<Sence> p) {
-		m_pSence = p; 
-		p->initEffect(m_pd3dDevice.Get());
-		p->initResource(m_pd3dDevice.Get());
+		if (p == nullptr)// 当跳转的Sence为空时，退出程序
+		{
+			SendMessage(MainWnd(), WM_DESTROY, 0, 0); 
+		}
+		else
+		{
+			m_pSence = p;
+			p->initEffect(m_pd3dDevice.Get());
+			p->initResource(m_pd3dDevice.Get());
+		}
 		});
 
 	m_pCamera = m_pSence->getCamera();

@@ -15,8 +15,8 @@ private:
 	};
 
 protected:
-	Label m_label;
 	Image m_image;
+	Label m_label;
 
 	ButtonStatus m_buttonStatus;
 
@@ -50,5 +50,7 @@ public:
 	void release();
 	void setReleaseFunction(std::function<void()> pf);				// 设置按钮松开的行为
 	auto getReleaseFunction() const;
+
+	void setDepth(float depth) override;
 };
 

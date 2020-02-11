@@ -7,8 +7,12 @@ class Sence_MainMenu :
 	public Sence
 {
 private:
+	std::vector<Button*> m_buttonList;// list从上到下从小到大
+	int m_buttonIndex;
+
 	Label m_title;
 	Button m_buttonChangeSence;
+	Button m_buttonExit;
 
 	std::shared_ptr<Camera> m_pCamera;
 	
@@ -27,6 +31,10 @@ public:
 	void beforeResize();
 	void afterResize();
 
+	void keyboardInput(const Keyboard& keyboard) override; //输入
 	std::shared_ptr<Camera> getCamera() override;
+
+private:
+	
 };
 

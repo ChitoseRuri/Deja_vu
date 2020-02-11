@@ -17,3 +17,7 @@ auto Sence::getSenceChangeFunction() const
 {
 	return m_senceChangeFunction;
 }
+
+void Sence::keyboardInput(const Keyboard& keyboard)
+{
+}

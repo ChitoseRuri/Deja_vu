@@ -2,13 +2,13 @@
 
 Button::Button():
 	m_buttonStatus(ButtonStatus::normal),
+	m_normalFunction(nullptr),
 	m_selectFunction(nullptr),
 	m_pressFunction(nullptr),
 	m_releaseFunction(nullptr)
 {
 	m_label.setText(L"Button");
-	m_label.setVisable(false);
-	m_image.setVisable(false);
+	setDepth(0.01f);
 }
 
 Button::~Button()
@@ -47,8 +47,6 @@ void Button::update(float dt)
 
 void Button::draw()
 {
-	m_image.draw();
-	m_label.draw();
 }
 
 void Button::normal()
@@ -121,4 +119,10 @@ void Button::setReleaseFunction(std::function<void()> pf)
 auto Button::getReleaseFunction() const
 {
 	return m_releaseFunction;
+}
+
+void Button::setDepth(float depth)
+{
+	m_image.setDepth(depth);
+	m_label.setDepth(depth - 0.0001f);
 }
