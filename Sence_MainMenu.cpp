@@ -112,9 +112,48 @@ void Sence_MainMenu::keyboardInput(const Keyboard& keyboard)
 	{
 		if (m_buttonIndex + 1 < m_buttonList.size())
 		{
-			m_buttonList[m_buttonIndex]->normal();
+			if (m_buttonIndex != -1)
+			{
+				m_buttonList[m_buttonIndex]->normal();
+			}
 			m_buttonList[++m_buttonIndex]->select();
 		}
+	}
+}
+
+void Sence_MainMenu::mouseInput(const Mouse& mouse)
+{
+	// 处理鼠标选择按键的行为
+	auto size = m_buttonList.size();
+	for (size_t i = 0; i < size; ++i)
+	{
+		if (m_buttonList[i]->isPosInRect(mouse.getMousePos()))
+		{
+			if (i != m_buttonIndex)
+			{
+				if (m_buttonIndex != -1)
+				{
+					m_buttonList[m_buttonIndex]->normal();
+				}
+				m_buttonList[i]->select();
+				m_buttonIndex = i;
+			}
+			break;
+		}
+		else
+		{
+			/*if (i == m_buttonIndex)
+			{
+				m_buttonList[m_buttonIndex]->normal();
+				m_buttonIndex = -1;
+			}*/
+		}
+	}
+	// 处理鼠标左键按下的行为
+	if (mouse.isButtonPress(Mouse::Button::LeftButton) && m_buttonIndex != -1)
+	{
+		if(m_buttonList[m_buttonIndex]->isPosInRect(mouse.getMousePos()))
+			m_buttonList[m_buttonIndex]->press();
 	}
 }
 

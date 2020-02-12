@@ -39,6 +39,7 @@ void GameApp::OnResize()
 
 	D3DApp::OnResize();
 	
+	m_mouse.afterResize(m_hMainWnd);
 	// 为D2D创建DXGI表面渲染目标
 	ComPtr<IDXGISurface> surface;
 	HR(m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface), reinterpret_cast<void**>(surface.GetAddressOf())));
@@ -83,6 +84,7 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {	
+	m_pSence->mouseInput(m_mouse);
 	m_pSence->keyboardInput(m_keyboard);
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
@@ -95,8 +97,9 @@ void GameApp::UpdateScene(float dt)
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
 	GameObject3D::updateAll(dt);
-
-	m_keyboard.update();// 最后更新键盘
+	// 最后更新键盘和鼠标
+	m_keyboard.update();
+	m_mouse.update();
 }
 
 void GameApp::DrawScene()
@@ -278,8 +281,6 @@ bool GameApp::InitResource()
 	memcpy_s(mappedData.pData, sizeof(CBLights), &m_CBRarely, sizeof(CBLights));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[3].Get(), 0);
 	
-
-
 	// ******************
 	// 给渲染管线各个阶段绑定好所需资源
 	// 设置图元类型

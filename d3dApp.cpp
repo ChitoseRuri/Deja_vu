@@ -310,19 +310,27 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_INPUT:
 
 	case WM_LBUTTONDOWN:
+		m_mouse.buttonDown(Mouse::Button::LeftButton);
+		return 0;
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
+		m_mouse.buttonDown(Mouse::Button::RightButton);
+		return 0;
 	case WM_XBUTTONDOWN:
 
 	case WM_LBUTTONUP:
+		m_mouse.buttonUp(Mouse::Button::LeftButton);
+		return 0;
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
+		m_mouse.buttonUp(Mouse::Button::RightButton);
+		return 0;
 	case WM_XBUTTONUP:
 
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHOVER:
 	case WM_MOUSEMOVE:
-		//m_pMouse->ProcessMessage(msg, wParam, lParam);
+		m_mouse.setMousePos(lParam);
 		return 0;
 
 	case WM_KEYDOWN:
@@ -337,7 +345,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_ACTIVATEAPP:
-		//m_pMouse->ProcessMessage(msg, wParam, lParam);
+		m_mouse.afterResize();
 		//m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}

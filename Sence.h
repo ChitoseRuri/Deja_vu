@@ -27,7 +27,7 @@ public:
 	auto getSenceChangeFunction() const;
 
 	virtual void keyboardInput(const Keyboard& keyboard);
+	virtual void mouseInput(const Mouse& mouse);
 
 protected:
 };
-

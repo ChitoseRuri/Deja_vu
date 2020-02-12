@@ -21,3 +21,7 @@ auto Sence::getSenceChangeFunction() const
 void Sence::keyboardInput(const Keyboard& keyboard)
 {
 }
+
+void Sence::mouseInput(const Mouse& mouse)
+{
+}

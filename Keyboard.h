@@ -191,6 +191,7 @@ public:
 
 			Pa1 = 0xfd,
 			OemClear = 0xfe,
+			KeysEnd// 长度标记
 		};
 	
 	Keyboard();

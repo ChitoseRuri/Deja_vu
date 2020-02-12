@@ -17,7 +17,12 @@ Button::~Button()
 
 void Button::setRect(const D2D1_RECT_F& rect)
 {
-	m_label.setRect(rect);
+	constexpr float w = 8.0f, h = 4.0f; // 测试用数据，待调整
+	assert(rect.right - rect.left > 2.0 * w);
+	assert(rect.bottom - rect.top > 2.0 * h);
+
+	m_rect = rect;
+	m_label.setRect(rect.left + w, rect.top + h, rect.right - w, rect.bottom - h);
 	m_image.setRect(rect);
 }
 
@@ -27,6 +32,8 @@ void Button::setRect(float left, float top, float right, float bottom)
 	constexpr float w = 8.0f, h = 4.0f; // 测试用数据，待调整
 	assert(right - left > 2.0 * w);
 	assert(bottom - top > 2.0 * h);
+
+	m_rect = { left, top, right, bottom };
 	m_label.setRect(left + w, top + h, right - w, bottom - h);
 	m_image.setRect(left, top, right, bottom);
 }

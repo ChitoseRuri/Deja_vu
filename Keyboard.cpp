@@ -1,8 +1,8 @@
 #include "Keyboard.h"
 
-#define KEYDOWN true
-#define KEYUP false
-constexpr int KEYS_LENGTH = 256;// bool vector的长度，即Keys枚举的长度
+constexpr bool KEYDOWN = true;// 按键按下的状态为true
+constexpr bool KEYUP = false;// 按键放开的状态为false
+constexpr int KEYS_LENGTH = static_cast<int>(Keyboard::Keys::KeysEnd);// bool vector的长度，即Keys枚举的长度
 
 Keyboard::Keyboard():
 	m_indexNow(0),

@@ -88,6 +88,7 @@ protected:
 	int m_ClientHeight;                                          // 视口高度
 
 	Keyboard m_keyboard;
+	Mouse m_mouse;
 };
 
 #endif // D3DAPP_H

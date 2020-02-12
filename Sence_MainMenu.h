@@ -31,7 +31,8 @@ public:
 	void beforeResize();
 	void afterResize();
 
-	void keyboardInput(const Keyboard& keyboard) override; //输入
+	void keyboardInput(const Keyboard& keyboard) override; //键盘输入
+	void mouseInput(const Mouse& mouse) override;// 鼠标输入
 	std::shared_ptr<Camera> getCamera() override;
 
 private:

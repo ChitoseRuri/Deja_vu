@@ -182,6 +182,11 @@ void GameObject2D::drawAll()
 	}
 }
 
+bool GameObject2D::isPosInRect(const XMINT2& pos) const
+{
+	return pos.x >= m_rect.left && pos.x <= m_rect.right && pos.y >= m_rect.top && pos.y <= m_rect.bottom;
+}
+
 bool GameObject2D::DEPTH::operator<(const DEPTH& rhs) const
 {
 	return depth > rhs.depth;
