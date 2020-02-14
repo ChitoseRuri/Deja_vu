@@ -15,7 +15,7 @@ bool Sence_MainMenu::initResource(ID3D11Device* pDevice)
 	ResourceDepot::loadDDSTesture(pDevice, L"Texture\\brick.dds", L"brick");
 
 	m_pCamera->lookAt(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-
+	
 	// 标题
 	m_title.setText(L"Deja vu");
 	m_title.setRect(300.0f, 100.0f, 600.0f, 300.0f);
@@ -90,7 +90,7 @@ void Sence_MainMenu::afterResize()
 {
 }
 
-void Sence_MainMenu::keyboardInput(const Keyboard& keyboard)
+void Sence_MainMenu::input(Keyboard& keyboard, Mouse& mouse)
 {
 	if (keyboard.isKeyPress(Keyboard::Keys::Escape))// EXIT
 	{
@@ -119,15 +119,24 @@ void Sence_MainMenu::keyboardInput(const Keyboard& keyboard)
 			m_buttonList[++m_buttonIndex]->select();
 		}
 	}
-}
 
-void Sence_MainMenu::mouseInput(const Mouse& mouse)
-{
+	if (keyboard.isKeyPress(Keyboard::Keys::G))
+	{
+		if (mouse.isLock())
+		{
+			mouse.lock();
+		}
+		else
+		{
+			mouse.unlock();
+		}
+	}
+
 	// 处理鼠标选择按键的行为
 	auto size = m_buttonList.size();
 	for (size_t i = 0; i < size; ++i)
 	{
-		if (m_buttonList[i]->isPosInRect(mouse.getMousePos()))
+		if (m_buttonList[i]->isPointInRect(mouse.getMousePos()))
 		{
 			if (i != m_buttonIndex)
 			{
@@ -152,7 +161,7 @@ void Sence_MainMenu::mouseInput(const Mouse& mouse)
 	// 处理鼠标左键按下的行为
 	if (mouse.isButtonPress(Mouse::Button::LeftButton) && m_buttonIndex != -1)
 	{
-		if(m_buttonList[m_buttonIndex]->isPosInRect(mouse.getMousePos()))
+		if (m_buttonList[m_buttonIndex]->isPointInRect(mouse.getMousePos()))
 			m_buttonList[m_buttonIndex]->press();
 	}
 }

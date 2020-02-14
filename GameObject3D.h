@@ -34,9 +34,10 @@ protected:
 	};
 	// P后缀的为亲节点变化的集合
 
-	XMFLOAT3 m_location, m_locationP;
-	XMFLOAT3 m_scale, m_scaleP;
-	XMFLOAT3 m_rotation, m_rotationP;
+	XMFLOAT3 m_localPositon;
+	XMFLOAT3 m_localScale;
+	XMFLOAT3 m_localRotation;
+	XMMATRIX m_worldMatrix, m_localMatrix;
 
 	CBWorld m_cbWorld;												// 计算后的矩阵
 	ComPtr<ID3D11ShaderResourceView> m_pTexture;
@@ -57,17 +58,17 @@ public:
 	static void updateAll(float dt);									// 更新全部
 	static void drawAll();			// 绘制全部
 
-	const XMFLOAT3& setLocation() const;
-	void setLocation(float x, float y, float z);
-	void setLocation(const XMFLOAT3& location);
+	const XMFLOAT3& setPosition() const;
+	virtual void setPosition(float x, float y, float z);
+	virtual void setPosition(const XMFLOAT3& location);
 
 	const XMFLOAT3& getScale() const;
-	void setScale(float x, float y, float z);
-	void setScale(const XMFLOAT3& scale);
+	virtual void setScale(float x, float y, float z);
+	virtual void setScale(const XMFLOAT3& scale);
 
 	const XMFLOAT3& getRotation() const;
-	void setRotation(float x, float y, float z);						// 角度
-	void setRotation(const XMFLOAT3& rotation);							// 角度
+	virtual void setRotation(float x, float y, float z);						// 角度
+	virtual void setRotation(const XMFLOAT3& rotation);							// 角度
 
 	const bool getVisable() const;
 	void setVisable(bool lb);
@@ -99,10 +100,9 @@ protected:
 	const bool getUpdatePassive() const;					// 判断是否为被动更新
 	void setUpdatePassive(bool lb);
 
-	void updateLocalMatrix();
-	void setLocationP(const XMFLOAT3& location);
-	void setScaleP(const XMFLOAT3& scale);
-	void setRotationP(const XMFLOAT3& rotation);
+	virtual void updateLocalMatrix();								// 自己的变换矩阵更变的时候调用
+	virtual void updateWorldMatrix();								// 亲节点的变化矩阵更变的时候调用
+	const XMMATRIX& getWorldMatrix() const;
 
 	void setParentPassive(GameObject3D* parent);
 	void addChildPassive(GameObject3D* child);

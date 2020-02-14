@@ -136,6 +136,8 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Camera_FirstPerson.h" />
+    <ClInclude Include="Camera_ThirdPerson.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="Character.h" />
@@ -169,6 +171,8 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Camera_FirstPerson.cpp" />
+    <ClCompile Include="Camera_ThirdPerson.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Character.cpp" />

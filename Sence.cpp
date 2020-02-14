@@ -1,5 +1,7 @@
 #include "Sence.h"
 
+std::function<void(std::shared_ptr<Sence> p)> Sence::m_senceChangeFunction = nullptr;
+
 Sence::Sence()
 {
 }
@@ -13,15 +15,11 @@ void Sence::setSenceChangeFunction(std::function<void(std::shared_ptr<Sence> p)>
 	m_senceChangeFunction = scf;
 }
 
-auto Sence::getSenceChangeFunction() const
+auto Sence::getSenceChangeFunction()
 {
 	return m_senceChangeFunction;
 }
 
-void Sence::keyboardInput(const Keyboard& keyboard)
-{
-}
-
-void Sence::mouseInput(const Mouse& mouse)
+void Sence::input(Keyboard& keyboard, Mouse& mouse)
 {
 }

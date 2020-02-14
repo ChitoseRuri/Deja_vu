@@ -3,11 +3,11 @@
 using namespace XMF_MATH;
 
 Camera::Camera():
-	m_Right(0.0f, 0.0f, 0.0f),
-	m_Up(0.0f, 0.0f, 0.0f), m_Look(0.0f, 0.0f, 0.0f),
+	m_targetR(1.0f, 0.0f, 0.0f),
+	m_targetU(0.0f, 1.0f, 0.0f), m_targetL(0.0f, 0.0f, 1.0f),
 	m_nearZ(), m_farZ(), m_fovY(), m_aspect(),
-	m_NearWindowHeight(), m_FarWindowHeight(),
-	m_View(), m_proj(), m_ViewPort()
+	m_nearWindowHeight(), m_farWindowHeight(),
+	m_view(), m_proj(), m_viewPort()
 {
 	setVisable(false);
 }
@@ -18,42 +18,37 @@ Camera::~Camera()
 
 XMVECTOR Camera::getLocationXM() const
 {
-	return XMLoadFloat3(&m_location);
+	return XMLoadFloat3(&m_localPositon);
 }
 
 XMVECTOR Camera::getRightXM() const
 {
-	return XMLoadFloat3(&m_Right);
+	return XMLoadFloat3(&m_targetR);
 }
 
 XMFLOAT3 Camera::getRight() const
 {
-	return m_Right;
+	return m_targetR;
 }
 
 XMVECTOR Camera::getUpXM() const
 {
-	return XMLoadFloat3(&m_Up);
+	return XMLoadFloat3(&m_targetU);
 }
 
 XMFLOAT3 Camera::getUp() const
 {
-	return m_Up;
+	return m_targetU;
 }
 
 XMVECTOR Camera::getLookXM() const
 {
-	return XMLoadFloat3(&m_Look);
-}
-
-XMFLOAT3 Camera::getLook() const
-{
-	return m_Look;
+	return XMVector3Transform(XMLoadFloat3(&m_targetL) - XMLoadFloat3(&m_localPositon),m_worldMatrix);
 }
 
 XMMATRIX Camera::getViewXM() const
 {
-	return XMLoadFloat4x4(&m_View);
+	return XMLoadFloat4x4(&m_view);
 }
 
 XMMATRIX Camera::getProjXM() const
@@ -63,12 +58,12 @@ XMMATRIX Camera::getProjXM() const
 
 XMMATRIX Camera::getViewProjXM() const
 {
-	return XMLoadFloat4x4(&m_View) * XMLoadFloat4x4(&m_proj);
+	return XMLoadFloat4x4(&m_view) * XMLoadFloat4x4(&m_proj);
 }
 
 D3D11_VIEWPORT Camera::getViewPort() const
 {
-	return m_ViewPort;
+	return m_viewPort;
 }
 
 void Camera::setFrustum(float fovY, float aspect, float nearZ, float farZ)
@@ -78,30 +73,38 @@ void Camera::setFrustum(float fovY, float aspect, float nearZ, float farZ)
 	m_nearZ = nearZ;
 	m_farZ = farZ;
 
-	m_NearWindowHeight = 2.0f * m_nearZ * tanf(0.5f * m_fovY);
-	m_FarWindowHeight = 2.0f * m_farZ * tanf(0.5f * m_fovY);
+	m_nearWindowHeight = 2.0f * m_nearZ * tanf(0.5f * m_fovY);
+	m_farWindowHeight = 2.0f * m_farZ * tanf(0.5f * m_fovY);
 
 	XMStoreFloat4x4(&m_proj, XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ));
 }
 
 void Camera::setViewPort(const D3D11_VIEWPORT& viewPort)
 {
-	m_ViewPort = viewPort;
+	m_viewPort = viewPort;
 }
 
 void Camera::setViewPort(float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth)
 {
-	m_ViewPort.TopLeftX = topLeftX;
-	m_ViewPort.TopLeftY = topLeftY;
-	m_ViewPort.Width = width;
-	m_ViewPort.Height = height;
-	m_ViewPort.MinDepth = minDepth;
-	m_ViewPort.MaxDepth = maxDepth;
+	m_viewPort.TopLeftX = topLeftX;
+	m_viewPort.TopLeftY = topLeftY;
+	m_viewPort.Width = width;
+	m_viewPort.Height = height;
+	m_viewPort.MinDepth = minDepth;
+	m_viewPort.MaxDepth = maxDepth;
 }
 
 void XM_CALLCONV Camera::lookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR up)
 {
-	lookTo(pos, target - pos, up);
+	auto L = target - pos;
+	auto R = XMVector3Normalize(XMVector3Cross(up, L));
+
+	XMStoreFloat3(&m_localPositon, pos);
+	XMStoreFloat3(&m_targetL, L);
+	XMStoreFloat3(&m_targetU, up);
+	XMStoreFloat3(&m_targetR, R);
+
+	m_trans |= Trans::locate_t;
 }
 
 void Camera::lookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up)
@@ -111,14 +114,12 @@ void Camera::lookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& targe
 
 void XM_CALLCONV Camera::lookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR to, DirectX::FXMVECTOR up)
 {
-	XMVECTOR L = XMVector3Normalize(to);
-	XMVECTOR R = XMVector3Normalize(XMVector3Cross(up, L));
-	XMVECTOR U = XMVector3Cross(L, R);
+	XMStoreFloat3(&m_localPositon, pos);
+	XMStoreFloat3(&m_targetL, to);
+	XMStoreFloat3(&m_targetU, up);
+	XMStoreFloat3(&m_targetR, XMVector3Cross(up, to));
 
-	XMStoreFloat3(&m_location, pos);
-	XMStoreFloat3(&m_Look, L);
-	XMStoreFloat3(&m_Right, R);
-	XMStoreFloat3(&m_Up, U);
+	m_trans = Trans::locate_t;
 }
 
 void Camera::lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, const DirectX::XMFLOAT3& up)
@@ -130,38 +131,53 @@ void Camera::update(float dt)
 {
 	updateLocalMatrix();
 
-	XMVECTOR R = XMLoadFloat3(&m_Right);
-	XMVECTOR U = XMLoadFloat3(&m_Up);
-	XMVECTOR L = XMLoadFloat3(&m_Look);
-	XMVECTOR P = XMLoadFloat3(&(m_location + m_locationP));
+	for (auto child : m_childen)
+	{
+		child->update(dt);
+	}
+}
 
-	// 保持摄像机的轴互为正交，且长度都为1
-	L = XMVector3Normalize(L);
-	U = XMVector3Normalize(XMVector3Cross(L, R));
+void Camera::updateLocalMatrix()
+{
+ 	GameObject3D::updateLocalMatrix();
+	updateView();
+}
 
-	// U, L已经正交化，需要计算对应叉乘得到R
-	R = XMVector3Cross(U, L);
+void Camera::updateWorldMatrix()
+{
+	GameObject3D::updateWorldMatrix();
+	updateView();
+}
+
+void Camera::updateView()
+{
+	// 控制条件： R与视线相交，但U、L未必垂直
+	XMVECTOR TR = XMVector3Transform(XMLoadFloat3(&m_targetR),m_worldMatrix);
+	XMVECTOR TU = XMVector3Transform(XMLoadFloat3(&m_targetU),m_worldMatrix);
+	XMVECTOR TL = XMVector3Transform(XMLoadFloat3(&m_targetL),m_worldMatrix);
+	XMVECTOR P = XMVector3Transform(XMVectorZero(), m_worldMatrix);
+
+	XMVECTOR L = XMVector3Normalize(TL - P);
+	XMVECTOR R = XMVector3Normalize(TR - P);
+	XMVECTOR U = XMVector3Normalize(TU - P);
+
+	XMFLOAT3 right, up, look;
+
+	XMStoreFloat3(&right, R);
+	XMStoreFloat3(&up, U);
+	XMStoreFloat3(&look, L);
 
 	// 填充观察矩阵
 	float x = -XMVectorGetX(XMVector3Dot(P, R));
 	float y = -XMVectorGetX(XMVector3Dot(P, U));
 	float z = -XMVectorGetX(XMVector3Dot(P, L));
 
-	XMStoreFloat3(&m_Right, R);
-	XMStoreFloat3(&m_Up, U);
-	XMStoreFloat3(&m_Look, L);
-
-	m_View = {
-		m_Right.x, m_Up.x, m_Look.x, 0.0f,
-		m_Right.y, m_Up.y, m_Look.y, 0.0f,
-		m_Right.z, m_Up.z, m_Look.z, 0.0f,
+	m_view = {
+		right.x, up.x, look.x, 0.0f,
+		right.y, up.y, look.y, 0.0f,
+		right.z, up.z, look.z, 0.0f,
 		x, y, z, 1.0f
 	};
-
-	for (auto child : m_childen)
-	{
-		child->update(dt);
-	}
 }
 
 const CBWorld& Camera::getWorldCB() const

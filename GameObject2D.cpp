@@ -182,7 +182,7 @@ void GameObject2D::drawAll()
 	}
 }
 
-bool GameObject2D::isPosInRect(const XMINT2& pos) const
+bool GameObject2D::isPointInRect(const POINT& pos) const
 {
 	return pos.x >= m_rect.left && pos.x <= m_rect.right && pos.y >= m_rect.top && pos.y <= m_rect.bottom;
 }

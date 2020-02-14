@@ -10,23 +10,6 @@ Car::Car()
 	addChild(&m_wheelRB);
 	addChild(&m_wheelRF);
 	addChild(&m_body);
-
-	m_wheelLF.setScale(0.5f, 0.1f, 0.5f);
-	m_wheelLB.setScale(0.5f, 0.1f, 0.5f);
-	m_wheelRF.setScale(0.5f, 0.1f, 0.5f);
-	m_wheelRB.setScale(0.5f, 0.1f, 0.5f);
-	m_body.setScale(0.3f, 1.0f, 0.3f);
-
-	m_wheelLF.setLocation(-0.5f, 0.0f, 1.0f);
-	m_wheelLB.setLocation(-0.5f, 0.0f, -1.0f);
-	m_wheelRF.setLocation(0.5f, 0.0f, 1.0f);
-	m_wheelRB.setLocation(0.5f, 0.0f, -1.0f);
-
-	m_wheelLF.setRotation(0.0f, 0.0f, 90.0f);
-	m_wheelLB.setRotation(0.0f, 0.0f ,90.0f);
-	m_wheelRF.setRotation(0.0f, 0.0f, 90.0f);
-	m_wheelRB.setRotation(0.0f, 0.0f, 90.0f);
-	m_body.setRotation(90.0f, 0.0f, 0.0f);
 }
 
 Car::~Car()
@@ -50,6 +33,24 @@ void Car::init(ID3D11Device* pDevice)
 	m_wheelRB.setTexture(ResourceDepot::getShaderResource(index));
 	m_wheelRF.setTexture(ResourceDepot::getShaderResource(index));
 	m_body.setTexture(ResourceDepot::getShaderResource(index));
+
+
+	m_wheelLF.setScale(0.5f, 0.1f, 0.5f);
+	m_wheelLB.setScale(0.5f, 0.1f, 0.5f);
+	m_wheelRF.setScale(0.5f, 0.1f, 0.5f);
+	m_wheelRB.setScale(0.5f, 0.1f, 0.5f);
+	m_body.setScale(0.3f, 1.0f, 0.3f);
+
+	m_wheelLF.setPosition(-0.5f, 0.0f, 1.0f);
+	m_wheelLB.setPosition(-0.5f, 0.0f, -1.0f);
+	m_wheelRF.setPosition(0.5f, 0.0f, 1.0f);
+	m_wheelRB.setPosition(0.5f, 0.0f, -1.0f);
+
+	m_wheelLF.setRotation(0.0f, 0.0f, 90.0f);
+	m_wheelLB.setRotation(0.0f, 0.0f, 90.0f);
+	m_wheelRF.setRotation(0.0f, 0.0f, 90.0f);
+	m_wheelRB.setRotation(0.0f, 0.0f, 90.0f);
+	m_body.setRotation(90.0f, 0.0f, 0.0f);
 
 }
 

@@ -1,10 +1,13 @@
 #pragma once
 #include "Sence.h"
+#include"Car.h"
 
 class Sence_DriverTest :
 	public Sence 
 {
 private:
+	Car m_car;
+
 protected:
 public:
 	Sence_DriverTest();

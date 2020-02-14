@@ -84,8 +84,7 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {	
-	m_pSence->mouseInput(m_mouse);
-	m_pSence->keyboardInput(m_keyboard);
+	m_pSence->input(m_keyboard, m_mouse);
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
@@ -210,22 +209,30 @@ bool GameApp::InitResource()
 	// 初始化天空盒
 	m_sky.init(m_pd3dDevice.Get(), L"TexTure\\daylight.jpg");
 
-	// 初始化第一个场景
-	m_pSence = std::make_shared<Sence_MainMenu>();
-	m_pSence->initResource(m_pd3dDevice.Get());
-
-	m_pSence->setSenceChangeFunction([&](std::shared_ptr<Sence> p) {
+	// 定义场景转换函数
+	Sence::setSenceChangeFunction([&](std::shared_ptr<Sence> p) {
 		if (p == nullptr)// 当跳转的Sence为空时，退出程序
 		{
 			SendMessage(MainWnd(), WM_DESTROY, 0, 0); 
 		}
 		else
 		{
-			m_pSence = p;
 			p->initEffect(m_pd3dDevice.Get());
 			p->initResource(m_pd3dDevice.Get());
+
+			// 初始化新的摄像机
+			m_pCamera = p->getCamera();
+			m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+			m_pCamera->setFrustum(XM_PI / 3, AspectRatio(), 0.5f, 1000.0f);
+			m_CBOnResize.proj = XMMatrixTranspose(m_pCamera->getProjXM());
+			// 切换sence
+			m_pSence = p;// 如果不是static, 这个调用需要放在最后，因为闭包的数据存放在原来的Scene，shared_ptr切换之后会清空闭包的数据导致上方的形参的this指针丢失。
 		}
 		});
+
+	// 初始化第一个场景
+	m_pSence = std::make_shared<Sence_MainMenu>();
+	m_pSence->initResource(m_pd3dDevice.Get());
 
 	m_pCamera = m_pSence->getCamera();
 	m_pCamera->setViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);

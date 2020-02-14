@@ -8,7 +8,8 @@ class Mouse
 {
 private:
 	HWND m_hwnd;
-	DirectX::XMINT2 m_pos;
+	POINT m_posNow, m_posLast;
+	POINT m_posLock;
 	std::vector<bool> m_status[2];
 	int m_indexNow, m_indexLast;
 
@@ -28,7 +29,7 @@ public:
 	void afterResize(HWND hwnd);
 
 	void setMousePos(WPARAM lParam);
-	DirectX::XMINT2 getMousePos() const;
+	POINT getMousePos() const;
 
 	void buttonUp(Button button);
 	void buttonDown(Button button);
@@ -39,4 +40,11 @@ public:
 	bool isButtonPress(Button button) const;
 
 	void update();
+
+	void lock();
+	void lock(const POINT& pos);
+	void unlock();
+	bool isLock() const;
+
+	POINT getRelativeMovement() const;// 获取相对上一帧的移动
 };

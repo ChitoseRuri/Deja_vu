@@ -62,6 +62,6 @@ public:
 	static void updateAll(float dt);
 	static void drawAll();
 
-	bool isPosInRect(const XMINT2& pos) const;
+	bool isPointInRect(const POINT& pos) const;
 };
 

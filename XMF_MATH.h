@@ -7,7 +7,7 @@ namespace XMF_MATH
 {
 	// 向量相加
 	XMFLOAT3 operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs);
-
+	
 	// 向量点乘
 	XMFLOAT3 operator*(const XMFLOAT3& lhs, const XMFLOAT3& rhs);
 

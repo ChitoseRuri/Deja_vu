@@ -7,23 +7,24 @@ class Camera:
 private:
 
 protected:
-	XMFLOAT3 m_Right;
-	XMFLOAT3 m_Up;
-	XMFLOAT3 m_Look;
+	XMFLOAT3 m_targetR;
+	XMFLOAT3 m_targetU;
+	XMFLOAT3 m_targetL;
+
 	// 视锥体属性
 	float m_nearZ;
 	float m_farZ;
 	float m_aspect;
 	float m_fovY;
-	float m_NearWindowHeight;
-	float m_FarWindowHeight;
+	float m_nearWindowHeight;
+	float m_farWindowHeight;
 
 	// 观察矩阵和透视投影矩阵
-	XMFLOAT4X4 m_View;
+	XMFLOAT4X4 m_view;
 	XMFLOAT4X4 m_proj;
 
 	// 当前视口
-	D3D11_VIEWPORT m_ViewPort;
+	D3D11_VIEWPORT m_viewPort;
 
 	//char pad[14];//打包对齐16
 
@@ -39,7 +40,6 @@ public:
 	XMVECTOR getUpXM() const;
 	XMFLOAT3 getUp() const;
 	XMVECTOR getLookXM() const;
-	XMFLOAT3 getLook() const;
 
 	// 获取矩阵
 	XMMATRIX getViewXM() const;
@@ -58,11 +58,14 @@ public:
 
 	// 设置摄像机的朝向
 	void XM_CALLCONV lookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR up);
-	void lookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up);
+	void lookAt(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& target,const DirectX::XMFLOAT3& up);
 	void XM_CALLCONV lookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR to, DirectX::FXMVECTOR up);
 	void lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, const DirectX::XMFLOAT3& up);
 
 	void update(float dt) override;
+	void updateLocalMatrix() override;
+	void updateWorldMatrix() override;
+	void updateView();
 
 	const CBWorld& getWorldCB() const;// 
 };

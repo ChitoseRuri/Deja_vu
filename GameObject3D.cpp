@@ -6,17 +6,16 @@ using namespace XMF_MATH;
 
 GameObject3D::GameObject3D() :
 	m_parent(nullptr),
-	m_location(.0f, .0f, .0f),
-	m_scale(1.0f, 1.0f, 1.0f),
-	m_rotation(.0f, .0f, .0f),
-	m_locationP(.0f, .0f, .0f),
-	m_scaleP(1.0f, 1.0f, 1.0f),
-	m_rotationP(.0f, .0f, .0f),
+	m_localPositon(.0f, .0f, .0f),
+	m_localScale(1.0f, 1.0f, 1.0f),
+	m_localRotation(.0f, .0f, .0f),
 	m_status(NULL),// 不依靠初始化列表，需要用函数初始化状态
 	m_trans(NULL),
 	m_drawIndex(-1),
 	m_updateIndex(-1),
-	m_cbWorld({ XMMatrixIdentity(), XMMatrixIdentity() })
+	m_cbWorld({ XMMatrixIdentity(), XMMatrixIdentity() }),
+	m_worldMatrix(XMMatrixIdentity()),
+	m_localMatrix(XMMatrixIdentity())
 {
 	// 把自己的指针放进GameObject统计列表里面
 	size_t index = -1;
@@ -81,54 +80,54 @@ void GameObject3D::drawAll()
 	}
 }
 
-const XMFLOAT3& GameObject3D::setLocation() const
+const XMFLOAT3& GameObject3D::setPosition() const
 {
-	return m_location;
+	return m_localPositon;
 }
 
-void GameObject3D::setLocation(float x, float y, float z)
+void GameObject3D::setPosition(float x, float y, float z)
 {
-	m_location = { x, y, z };
+	m_localPositon = { x, y, z };
 	m_trans |= Trans::locate_t;
 }
 
-void GameObject3D::setLocation(const XMFLOAT3& location)
+void GameObject3D::setPosition(const XMFLOAT3& location)
 {
-	m_location = location;
+	m_localPositon = location;
 	m_trans |= Trans::locate_t;
 }
 
 const XMFLOAT3& GameObject3D::getScale() const
 {
-	return m_scale;
+	return m_localScale;
 }
 
 void GameObject3D::setScale(float x, float y, float z)
 {
-	m_scale = { x, y, z };
+	m_localScale = { x, y, z };
 	m_trans |= Trans::scale_t;
 }
 
 void GameObject3D::setScale(const XMFLOAT3& scale)
 {
-	m_scale = scale;
+	m_localScale = scale;
 	m_trans |= Trans::scale_t;
 }
 
 const XMFLOAT3& GameObject3D::getRotation() const
 {
-	return m_rotation;
+	return m_localRotation;
 }
 
 void GameObject3D::setRotation(float x, float y, float z)
 {
-	m_rotation = { x, y, z };
+	m_localRotation = { x, y, z };
 	m_trans |= Trans::rotate_t;
 }
 
 void GameObject3D::setRotation(const XMFLOAT3& rotation)
 {
-	m_rotation = rotation;
+	m_localRotation = rotation;
 	m_trans |= Trans::rotate_t;
 }
 
@@ -254,9 +253,6 @@ void GameObject3D::setParent(GameObject3D* parent)
 		m_parent = parent;
 		setUpdatePassive(false);
 		setUpdateActive(true);
-		m_scaleP = { 1.0f,1.0f,1.0f };
-		m_rotation = { 0.0f,0.0f,0.0f };
-		m_locationP = { 0.0f, 0.0f, 0.0f };
 		m_trans = UINT32_MAX;
 	}
 	else
@@ -372,70 +368,52 @@ void GameObject3D::updateLocalMatrix()
 	{
 		return;
 	}
-	XMFLOAT3 scale = m_scale * m_scaleP;
-	XMFLOAT3 rotation = m_rotation + m_rotationP;
-	XMFLOAT3 location = m_location + m_locationP;
 	XMFLOAT4X4 scaleF4 = {
-		scale.x, 0.0f, 0.0f, 0.0f,
-		0.0f, scale.y, 0.0f, 0.0f,
-		0.0f, 0.0f, scale.z, 0.0f,
+		m_localScale.x, 0.0f, 0.0f, 0.0f,
+		0.0f, m_localScale.y, 0.0f, 0.0f,
+		0.0f, 0.0f, m_localScale.z, 0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};
 	XMMATRIX scaleMatrix = XMLoadFloat4x4(&scaleF4);
-	XMMATRIX rotationMatrix = XMMatrixRotationX(toRadian(rotation.x)) * XMMatrixRotationY(toRadian(rotation.y)) * XMMatrixRotationZ(toRadian(rotation.z));
+	XMMATRIX rotationMatrix = XMMatrixRotationX(toRadian(m_localRotation.x)) * XMMatrixRotationY(toRadian(m_localRotation.y)) * XMMatrixRotationZ(toRadian(m_localRotation.z));
 	XMFLOAT4X4 locationF4 = {
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		location.x, location.y, location.z, 1.0f
+		m_localPositon.x, m_localPositon.y, m_localPositon.z, 1.0f
 	};
 	XMMATRIX locationMatrix = XMLoadFloat4x4(&locationF4);
-	XMMATRIX worldMatrix = scaleMatrix * rotationMatrix * locationMatrix;
-	// 内部进行转置，这样外部就不需要提前转置了
-	m_cbWorld.world = XMMatrixTranspose(worldMatrix);
-	m_cbWorld.worldInvTranspose = XMMatrixInverse(nullptr, worldMatrix);	// 两次转置抵消
-	// 根据更新总量更新子节点
-	if (m_trans & Trans::scale_t)
+	m_localMatrix = scaleMatrix * rotationMatrix * locationMatrix;
+	m_worldMatrix = m_parent ? m_localMatrix * m_parent->getWorldMatrix() : m_localMatrix;
+	// 内部进行转置
+	m_cbWorld.world = XMMatrixTranspose(m_worldMatrix);
+	m_cbWorld.worldInvTranspose = XMMatrixInverse(nullptr, m_worldMatrix);	// 两次转置抵消
+	
+	for (auto child : m_childen)
 	{
-		for (auto child : m_childen)
-		{
-			child->setScaleP(scale);
-		}
-	}
-	if (m_trans & Trans::rotate_t)
-	{
-		for (auto child : m_childen)
-		{
-			child->setRotationP(rotation);
-		}
-	}
-	if (m_trans & Trans::locate_t)
-	{
-		for (auto child : m_childen)
-		{
-			child->setLocationP(location);
-		}
+		child->updateWorldMatrix();
 	}
 	m_trans = NULL;// 重置修改判断符
 }
 
-void GameObject3D::setLocationP(const XMFLOAT3& location)
+void GameObject3D::updateWorldMatrix()
 {
-	m_locationP = location;
-	m_trans |= Trans::locate_t;
+	assert(m_parent);
+	m_worldMatrix = m_localMatrix * m_parent->getWorldMatrix();
+	m_cbWorld.world = XMMatrixTranspose(m_worldMatrix);
+	m_cbWorld.worldInvTranspose = XMMatrixInverse(nullptr, m_worldMatrix);
+
+	for (auto child : m_childen)
+	{
+		child->updateWorldMatrix();
+	}
 }
 
-void GameObject3D::setScaleP(const XMFLOAT3& scale)
+const XMMATRIX& GameObject3D::getWorldMatrix() const
 {
-	m_scaleP = scale;
-	m_trans |= Trans::scale_t;
+	return m_worldMatrix;
 }
 
-void GameObject3D::setRotationP(const XMFLOAT3& rotation)
-{
-	m_rotationP = rotation;
-	m_trans |= rotate_t;
-}
 
 void GameObject3D::setParentPassive(GameObject3D* parent)
 {
@@ -450,8 +428,6 @@ void GameObject3D::addChildPassive(GameObject3D* child)
 	}
 
 	m_childen.push_back(child);
-	child->setScaleP(m_scale * m_scaleP);
-	child->setRotationP(m_rotation * m_rotationP);
-	child->setLocationP(m_location + m_locationP);
+
 }
 

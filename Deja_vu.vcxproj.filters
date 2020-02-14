@@ -111,6 +111,12 @@
     <ClCompile Include="Sence_DriverTest.cpp">
       <Filter>Sence\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Camera_ThirdPerson.cpp">
+      <Filter>3D\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera_FirstPerson.cpp">
+      <Filter>3D\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -205,6 +211,12 @@
     </ClInclude>
     <ClInclude Include="Sence_DriverTest.h">
       <Filter>Sence\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera_FirstPerson.h">
+      <Filter>3D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera_ThirdPerson.h">
+      <Filter>3D\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
