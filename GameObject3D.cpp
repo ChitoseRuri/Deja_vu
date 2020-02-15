@@ -293,6 +293,11 @@ void GameObject3D::delChild(GameObject3D* child)
 	assert(true);
 }
 
+const XMMATRIX& GameObject3D::getWorldMatrix() const
+{
+	return m_worldMatrix;
+}
+
 void GameObject3D::setDebugObjectName(const std::string& name)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -408,12 +413,6 @@ void GameObject3D::updateWorldMatrix()
 		child->updateWorldMatrix();
 	}
 }
-
-const XMMATRIX& GameObject3D::getWorldMatrix() const
-{
-	return m_worldMatrix;
-}
-
 
 void GameObject3D::setParentPassive(GameObject3D* parent)
 {

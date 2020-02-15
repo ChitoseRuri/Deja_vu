@@ -9,7 +9,7 @@ class Mouse
 private:
 	HWND m_hwnd;
 	POINT m_posNow, m_posLast;
-	POINT m_posLock;
+	POINT m_posLockS, m_posLockC;
 	std::vector<bool> m_status[2];
 	int m_indexNow, m_indexLast;
 

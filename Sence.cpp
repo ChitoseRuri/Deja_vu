@@ -1,6 +1,6 @@
 #include "Sence.h"
 
-std::function<void(std::shared_ptr<Sence> p)> Sence::m_senceChangeFunction = nullptr;
+std::function<void(std::shared_ptr<Sence> p)> Sence::switchSence = nullptr;
 
 Sence::Sence()
 {
@@ -10,16 +10,16 @@ Sence::~Sence()
 {
 }
 
-void Sence::setSenceChangeFunction(std::function<void(std::shared_ptr<Sence> p)> scf)
+void Sence::setSwitchSenceFunction(std::function<void(std::shared_ptr<Sence> p)> scf)
 {
-	m_senceChangeFunction = scf;
+	switchSence = scf;
 }
 
-auto Sence::getSenceChangeFunction()
+auto Sence::getSwitchSenceFunction()
 {
-	return m_senceChangeFunction;
+	return switchSence;
 }
 
-void Sence::input(Keyboard& keyboard, Mouse& mouse)
+void Sence::input(Keyboard& keyboard, Mouse& mouse, float dt)
 {
 }

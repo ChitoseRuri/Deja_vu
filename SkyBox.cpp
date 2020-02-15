@@ -84,10 +84,10 @@ void SkyBox::loadImageTexture(ID3D11Device* pDevice,  std::wstring fileName)
 	vertexDataArr[19].tex = { wp, hp * 2.0f };
 	// 正面(-Z面)
 
-	vertexDataArr[20].tex = { wp * 3.0f, hp * 2.0f };
-	vertexDataArr[21].tex = { wp * 3.0f, hp };
-	vertexDataArr[22].tex = { 1.0f, hp };
-	vertexDataArr[23].tex = { 1.0f, hp * 2.0f };
+	vertexDataArr[20].tex = { 1.0f, hp * 2.0f };
+	vertexDataArr[21].tex = { 1.0f, hp };
+	vertexDataArr[22].tex = { wp * 3.0f, hp };
+	vertexDataArr[23].tex = { wp * 3.0f, hp * 2.0f };
 
 	for (UINT i = 0; i < 4; ++i)
 	{

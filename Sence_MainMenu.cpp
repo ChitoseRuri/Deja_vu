@@ -37,7 +37,7 @@ bool Sence_MainMenu::initResource(ID3D11Device* pDevice)
 		m_buttonChangeSence.getImage().setVisable(true);
 		});
 	m_buttonChangeSence.setPressFunction([&]() {
-		m_senceChangeFunction(std::make_shared<Sence_DriverTest>());
+		switchSence(std::make_shared<Sence_DriverTest>());
 		});
 	m_buttonChangeSence.normal();
 	m_buttonChangeSence.getImage().setSRV(ResourceDepot::getShaderResource(L"brick"));
@@ -56,7 +56,7 @@ bool Sence_MainMenu::initResource(ID3D11Device* pDevice)
 		m_buttonExit.getImage().setVisable(true);
 		});
 	m_buttonExit.setPressFunction([&]() {
-		m_senceChangeFunction(nullptr);
+		switchSence(nullptr);
 		});
 	m_buttonExit.getImage().setSRV(ResourceDepot::getShaderResource(L"brick"));
 	m_buttonExit.normal();
@@ -90,11 +90,11 @@ void Sence_MainMenu::afterResize()
 {
 }
 
-void Sence_MainMenu::input(Keyboard& keyboard, Mouse& mouse)
+void Sence_MainMenu::input(Keyboard& keyboard, Mouse& mouse, float dt)
 {
 	if (keyboard.isKeyPress(Keyboard::Keys::Escape))// EXIT
 	{
-		m_senceChangeFunction(nullptr);
+		switchSence(nullptr);
 	}
 	if (keyboard.isKeyPress(Keyboard::Keys::Enter))
 	{

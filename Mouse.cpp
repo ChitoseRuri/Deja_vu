@@ -4,11 +4,12 @@
 constexpr int MOUSE_LENGTH = static_cast<int>(Mouse::Button::ButonEnd);
 constexpr bool BUTTON_UP = false;
 constexpr bool BUTTON_DOWN = true;
+constexpr int MENU_HEIGHT = 32;// 窗口模式菜单栏的高度
 
 Mouse::Mouse():
 	m_indexNow(0),
 	m_indexLast(1),
-	m_posLock({-1, -1})
+	m_posLockS({-1, -1})
 {
 	m_status[0].resize(MOUSE_LENGTH, BUTTON_UP);
 	m_status[1].resize(MOUSE_LENGTH, BUTTON_UP);
@@ -23,6 +24,7 @@ void Mouse::afterResize()
 {
 	RECT rect;
 	GetWindowRect(m_hwnd, &rect);
+	rect.top += MENU_HEIGHT;
 	ClipCursor(&rect);
 }
 
@@ -31,6 +33,7 @@ void Mouse::afterResize(HWND hwnd)
 	m_hwnd = hwnd;
 	RECT rect;
 	GetWindowRect(hwnd, &rect);
+	rect.top += MENU_HEIGHT;
 	ClipCursor(&rect);
 }
 
@@ -80,10 +83,10 @@ void Mouse::update()
 	m_indexNow ^= 1;
 
 	m_status[m_indexNow] = m_status[m_indexLast];
-	if (m_posLock.x != -1)
+	if (m_posLockS.x != -1)
 	{
-		SetCursorPos(m_posLock.x, m_posLock.y);
-		m_posLast = m_posLock;
+		SetCursorPos(m_posLockS.x, m_posLockS.y);
+		m_posLast = m_posLockS;
 	}
 	else
 	{
@@ -95,28 +98,35 @@ void Mouse::lock()
 {
 	RECT rect;
 	GetWindowRect(m_hwnd, &rect);
-	m_posLock = { (rect.right - rect.left) >> 1, (rect.bottom - rect.top) >> 1 };
-	ClientToScreen(m_hwnd, &m_posLock);
+	m_posLockC = m_posLockS = { (rect.right - rect.left) >> 1, (rect.bottom - rect.top) >> 1 };
+	ClientToScreen(m_hwnd, &m_posLockS);
 }
 
 void Mouse::lock(const POINT& pos)
 {
 	assert(pos.x > 0 && pos.y > 0);
-	m_posLock = pos;
-	ClientToScreen(m_hwnd, &m_posLock);
+	m_posLockC = m_posLockS = pos;
+	ClientToScreen(m_hwnd, &m_posLockS);
 }
 
 void Mouse::unlock()
 {
-	m_posLock = { -1, -1 };
+	m_posLockS = { -1, -1 };
 }
 
 bool Mouse::isLock() const
 {
-	return m_posLock.x == -1;
+	return m_posLockS.x != -1;
 }
 
 POINT Mouse::getRelativeMovement() const
 {
-	return { m_posNow.x - m_posLast.x, m_posNow.y - m_posLast.y };
+	if (m_posLockS.x == -1)
+	{
+		return { m_posNow.x - m_posLast.x, m_posNow.y - m_posLast.y};
+	}
+	else
+	{
+		return{ m_posNow.x - m_posLockC.x, m_posNow.y - m_posLockC.y };
+	}
 }

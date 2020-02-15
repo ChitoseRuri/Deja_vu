@@ -65,8 +65,10 @@ public:
 	void update(float dt) override;
 	void updateLocalMatrix() override;
 	void updateWorldMatrix() override;
-	void updateView();
+	virtual void updateView();
 
 	const CBWorld& getWorldCB() const;// 
+
+	virtual void input(const XMFLOAT3& ir);
 };
 

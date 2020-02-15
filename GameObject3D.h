@@ -89,6 +89,8 @@ public:
 	GameObject3D* getParent()const;
 	void addChild(GameObject3D* child);
 	void delChild(GameObject3D* child);
+
+	const XMMATRIX& getWorldMatrix() const;
 	// 设置调试对象名
 // 若缓冲区被重新设置，调试对象名也需要被重新设置
 	void setDebugObjectName(const std::string& name);
@@ -102,7 +104,6 @@ protected:
 
 	virtual void updateLocalMatrix();								// 自己的变换矩阵更变的时候调用
 	virtual void updateWorldMatrix();								// 亲节点的变化矩阵更变的时候调用
-	const XMMATRIX& getWorldMatrix() const;
 
 	void setParentPassive(GameObject3D* parent);
 	void addChildPassive(GameObject3D* child);

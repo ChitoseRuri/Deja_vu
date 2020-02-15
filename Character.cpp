@@ -3,19 +3,21 @@
 using namespace XMF_MATH;
 
 Character::Character() :
-	m_pCamera(std::shared_ptr<Camera>(new Camera)),
 	m_acceleration({0.0f, 0.0f, 0.0f}),
 	m_resistance({ 0.0f, 0.0f, 0.0f }),
-	m_speedVector({ 0.0f, 0.0f, 0.0f }),
-	m_eyeIndex(0)
+	m_speedVector({ 0.0f, 0.0f, 0.0f })
 {
-	addChild(&*m_pCamera);
-	m_eyePos.push_back(XMFLOAT3(0.0f, 0.0f, -4.0f));
-	m_pCamera->lookAt(m_eyePos[m_eyeIndex], XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 }
 
 Character::~Character()
 {
+}
+
+void Character::init()
+{
+	m_pCamera = std::shared_ptr<Camera>(new Camera);
+	addChild(&*m_pCamera);
+	m_pCamera->lookAt(XMFLOAT3(0.0f, 0.0f, -4.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 }
 
 std::shared_ptr<Camera> Character::getCamera() const

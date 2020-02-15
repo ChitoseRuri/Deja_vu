@@ -3,7 +3,7 @@
 using namespace XMF_MATH;
 
 Camera::Camera():
-	m_targetR(1.0f, 0.0f, 0.0f),
+	m_targetR(1.0f, 0.0f, 0.0f), 
 	m_targetU(0.0f, 1.0f, 0.0f), m_targetL(0.0f, 0.0f, 1.0f),
 	m_nearZ(), m_farZ(), m_fovY(), m_aspect(),
 	m_nearWindowHeight(), m_farWindowHeight(),
@@ -168,19 +168,19 @@ void Camera::updateView()
 	XMStoreFloat3(&look, L);
 
 	// 填充观察矩阵
-	float x = -XMVectorGetX(XMVector3Dot(P, R));
-	float y = -XMVectorGetX(XMVector3Dot(P, U));
-	float z = -XMVectorGetX(XMVector3Dot(P, L));
-
 	m_view = {
 		right.x, up.x, look.x, 0.0f,
 		right.y, up.y, look.y, 0.0f,
 		right.z, up.z, look.z, 0.0f,
-		x, y, z, 1.0f
+		-XMVectorGetX(XMVector3Dot(P, R)), -XMVectorGetX(XMVector3Dot(P, U)), -XMVectorGetX(XMVector3Dot(P, L)), 1.0f
 	};
 }
 
 const CBWorld& Camera::getWorldCB() const
 {
 	return m_cbWorld;
+}
+
+void Camera::input(const XMFLOAT3& ir)
+{
 }

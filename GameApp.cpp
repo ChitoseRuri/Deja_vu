@@ -84,7 +84,7 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {	
-	m_pSence->input(m_keyboard, m_mouse);
+	m_pSence->input(m_keyboard, m_mouse, dt);
 	// 更新观察矩阵
 	XMStoreFloat4(&m_CBFrame.eyePos, m_pCamera->getLocationXM());
 	m_CBFrame.view = XMMatrixTranspose(m_pCamera->getViewXM());
@@ -210,7 +210,7 @@ bool GameApp::InitResource()
 	m_sky.init(m_pd3dDevice.Get(), L"TexTure\\daylight.jpg");
 
 	// 定义场景转换函数
-	Sence::setSenceChangeFunction([&](std::shared_ptr<Sence> p) {
+	Sence::setSwitchSenceFunction([&](std::shared_ptr<Sence> p) {
 		if (p == nullptr)// 当跳转的Sence为空时，退出程序
 		{
 			SendMessage(MainWnd(), WM_DESTROY, 0, 0); 

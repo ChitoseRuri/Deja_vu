@@ -9,7 +9,7 @@ class Sence
 {
 private:
 protected:
-	static std::function<void(std::shared_ptr<Sence> p)> m_senceChangeFunction;// 切换scene时候调用的方法
+	static std::function<void(std::shared_ptr<Sence> p)> switchSence;// 切换scene时候调用的方法
 
 public:
 	Sence();
@@ -23,10 +23,10 @@ public:
 	virtual bool initResource(ID3D11Device * pDevice) = NULL;				  // 这个函数在init中调用
 	virtual bool initEffect(ID3D11Device* pDevice) = NULL;					  // 这个函数在init中调用
 
-	static void setSenceChangeFunction(std::function<void(std::shared_ptr<Sence> p)> scf);
-	static auto getSenceChangeFunction();
+	static void setSwitchSenceFunction(std::function<void(std::shared_ptr<Sence> p)> scf);
+	static auto getSwitchSenceFunction();
 
-	virtual void input(Keyboard& keyboard, Mouse& mouse);
+	virtual void input(Keyboard& keyboard, Mouse& mouse, float dt);
 
 protected:
 };
