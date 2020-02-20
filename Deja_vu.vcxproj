@@ -165,6 +165,7 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Wheel.h" />
     <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="XMF_MATH.h" />
   </ItemGroup>
@@ -199,6 +200,7 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="Wheel.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
     <ClCompile Include="XMF_MATH.cpp" />
   </ItemGroup>
@@ -208,12 +210,20 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS_Sky</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="HLSL\Sky_VS_3D.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS_Sky</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HLSL\%(Filename).cso</ObjectFileOutput>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS_Sky</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
     <None Include="HLSL\Basic.hlsli">
       <FileType>Document</FileType>

@@ -95,7 +95,11 @@ void GameApp::UpdateScene(float dt)
 	memcpy_s(mappedData.pData, sizeof(CBCamera), &m_CBFrame, sizeof(CBCamera));
 	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
+	// 先更新3的后更新2D
 	GameObject3D::updateAll(dt);
+	GameObject2D::updateAll(dt);
+
+	m_pCamera = m_pSence->getCamera();
 	// 最后更新键盘和鼠标
 	m_keyboard.update();
 	m_mouse.update();
@@ -278,7 +282,6 @@ bool GameApp::InitResource()
 
 
 	// 更新不容易被修改的常量缓冲区资源
-	// 3D
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(CBChangesOnResize), &m_CBOnResize, sizeof(CBChangesOnResize));

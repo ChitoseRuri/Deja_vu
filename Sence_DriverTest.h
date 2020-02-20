@@ -7,6 +7,10 @@ class Sence_DriverTest :
 {
 private:
 	Car m_car;
+	GameObject3D m_land, m_box;
+
+	// UI
+	Label m_labelSpeed;
 
 protected:
 public:

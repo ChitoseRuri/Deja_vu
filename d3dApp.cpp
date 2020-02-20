@@ -334,11 +334,13 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_KEYDOWN:
-		m_keyboard.keyDown(static_cast<Keyboard::Keys>(wParam));
+		if(static_cast<int>(wParam) < static_cast<int>(Keyboard::Keys::KeysEnd))
+			m_keyboard.keyDown(static_cast<Keyboard::Keys>(wParam));
 		return 0;
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
-		m_keyboard.keyUp(static_cast<Keyboard::Keys>(wParam));
+		if (static_cast<int>(wParam) < static_cast<int>(Keyboard::Keys::KeysEnd))
+			m_keyboard.keyUp(static_cast<Keyboard::Keys>(wParam));
 		return 0;
 	case WM_SYSKEYUP:
 		//m_pKeyboard->ProcessMessage(msg, wParam, lParam);

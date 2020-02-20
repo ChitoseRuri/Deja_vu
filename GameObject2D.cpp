@@ -165,11 +165,16 @@ auto GameObject2D::getUpdateFunction() const
 
 void GameObject2D::update(float dt)
 {
-	m_updateFunction(dt);
+	if(m_updateFunction)
+		m_updateFunction(dt);
 }
 
 void GameObject2D::updateAll(float dt)
 {
+	for (auto p : m_updateList)
+	{
+		p->update(dt);
+	}
 }
 
 void GameObject2D::drawAll()

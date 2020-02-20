@@ -130,7 +130,7 @@ void Camera::lookTo(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& to, c
 void Camera::update(float dt)
 {
 	updateLocalMatrix();
-
+	updateView();
 	for (auto child : m_childen)
 	{
 		child->update(dt);
@@ -140,13 +140,11 @@ void Camera::update(float dt)
 void Camera::updateLocalMatrix()
 {
  	GameObject3D::updateLocalMatrix();
-	updateView();
 }
 
 void Camera::updateWorldMatrix()
 {
 	GameObject3D::updateWorldMatrix();
-	updateView();
 }
 
 void Camera::updateView()

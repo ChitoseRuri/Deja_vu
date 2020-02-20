@@ -13,7 +13,7 @@ protected:
 
 public:
 	Character();
-	~Character();
+	virtual ~Character();
 
 	virtual void init();
 
@@ -34,6 +34,5 @@ public:
 	void update(float dt) override;
 
 protected:
-	void updateSpeed(float dt);
 };
 

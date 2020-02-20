@@ -36,6 +36,5 @@ public:
 	const auto& getText() const;
 
 	void draw() override;
-	void update(float dt) override;
 };
 

@@ -83,6 +83,8 @@ void Image::setRect(float left, float top, float right, float bottom)
 
 void Image::update(float dt)
 {
+	if (m_updateFunction)
+		m_updateFunction(dt);
 }
 
 void Image::draw()

@@ -89,7 +89,3 @@ void Label::draw()
 	m_pd2dRenderTarget->DrawTextW(m_text.c_str(), m_text.length(), m_pTextFormat.Get(), m_rect, m_pSolidColorBrush.Get());
 	HR(m_pd2dRenderTarget->EndDraw());
 }
-
-void Label::update(float dt)
-{
-}

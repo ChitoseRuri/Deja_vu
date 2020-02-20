@@ -117,6 +117,9 @@
     <ClCompile Include="Camera_FirstPerson.cpp">
       <Filter>3D\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Wheel.cpp">
+      <Filter>3D\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -216,6 +219,9 @@
       <Filter>3D\Head</Filter>
     </ClInclude>
     <ClInclude Include="Camera_ThirdPerson.h">
+      <Filter>3D\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Wheel.h">
       <Filter>3D\Head</Filter>
     </ClInclude>
   </ItemGroup>

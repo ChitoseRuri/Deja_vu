@@ -21,12 +21,12 @@ bool Sence_MainMenu::initResource(ID3D11Device* pDevice)
 	m_title.setRect(300.0f, 100.0f, 600.0f, 300.0f);
 	m_title.setTextColor(D2D1::ColorF::PeachPuff);
 	m_title.setTextFormat(L"Title", L"Georgia", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
-		DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL, 40, L"zh-cn");
+		DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_MEDIUM, 40, L"zh-cn");
 	
 	// 定义选择测试关卡的按钮的行为和样式
 	m_buttonChangeSence.getLabel().setText(L"Driver Test");
 	m_buttonChangeSence.getLabel().setTextFormat(L"MainMenuButton", L"Georgia", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
-		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 30, L"zh-cn");
+		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_MEDIUM, 30, L"zh-cn");
 	m_buttonChangeSence.setRect(300.f, 400.0f, 490.0f, 450.0f);
 	m_buttonChangeSence.setNormalFunction([&]() {
 		m_buttonChangeSence.getLabel().setTextColor(D2D1::ColorF::White);
@@ -64,6 +64,26 @@ bool Sence_MainMenu::initResource(ID3D11Device* pDevice)
 
 	m_buttonIndex = 0;
 	m_buttonList[m_buttonIndex]->select();
+
+	m_imageTalker.setSRV(ResourceDepot::getShaderResource(ResourceDepot::loadImage(pDevice, L"Texture\\talker.png", L"talker")));
+	m_imageTalker.setRect(0.0f, 100.0f, 300.0f, 400.0f);
+	m_imageTalker.setDepth(0.004f);
+	m_imageTalker.setVisable(true);
+
+	m_labelDescription.setTextFormat(L"MainMenuButton");
+	m_labelDescription.setTextColor(D2D1::ColorF::Blue);
+	m_labelDescription.setRect(230.0f, 150.0f, 600.0f, 500.0f);
+	m_imageTalker.setDepth(0.003f);
+	m_labelDescription.setText(L"移动：WASD\n刹车：space\n切换摄像机：T\n锁定鼠标：G\n调整第三人称摄像机：I、O");
+
+	m_imageSans.setSRV(ResourceDepot::getShaderResource(ResourceDepot::loadImage(pDevice, L"Texture\\sans.png", L"sans")));
+	m_imageSans.setRect(500.0f, 100.0f, 600.0f, 200.0f);
+	m_imageSans.setDepth(0.004f);
+	m_imageSans.setVisable(true);
+	m_imageSans.setActive(true);
+	m_imageSans.setUpdateFunction([&](float dt) {
+		m_imageSans.setRotation(m_imageSans.getRoation() - 90.0f * dt);
+		});
 	return true;
 }
 

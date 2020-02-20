@@ -13,6 +13,9 @@ private:
 	Label m_title;
 	Button m_buttonChangeSence;
 	Button m_buttonExit;
+	Image m_imageTalker;
+	Image m_imageSans;
+	Label m_labelDescription;
 
 	std::shared_ptr<Camera> m_pCamera;
 	

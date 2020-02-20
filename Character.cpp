@@ -46,7 +46,7 @@ void Character::setAcceleration(const XMFLOAT3& acceleration)
 }
 
 void Character::setAcceleration(float x, float y, float z)
-{
+{ 
 	m_acceleration = { x, y, z };
 }
 
@@ -70,45 +70,12 @@ const XMFLOAT3& Character::getResistance() const
 	return m_resistance;
 }
 
-void Character::update(float dt)
+void Character::update(float dt)// 弃用
 {
-	updateSpeed(dt);
+	setPosition(m_localPositon + (m_speedVector * dt));
 	updateLocalMatrix();
 	for (auto child : m_childen)
 	{
 		child->update(dt);
 	}
-}
-
-void Character::updateSpeed(float dt)
-{
-	// 计算加速后的速度
-	m_speedVector += (m_acceleration * dt);
-	// 计算阻力后的速度
-	if (abs(m_speedVector.x) < abs(m_resistance.x))
-	{
-		m_speedVector.x = 0.0f;
-	}
-	else
-	{
-		m_speedVector.x += m_resistance.x;
-	}
-	if (abs(m_speedVector.y) < abs(m_resistance.y))
-	{
-		m_speedVector.y = 0.0f;
-	}
-	else
-	{
-		m_speedVector.y += m_resistance.y;
-	}
-	if (abs(m_speedVector.z) < abs(m_resistance.z))
-	{
-		m_speedVector.z = 0.0f;
-	}
-	else
-	{
-		m_speedVector.z += m_resistance.z;
-	}
-
-	setPosition(m_localPositon + (m_speedVector * dt));
 }

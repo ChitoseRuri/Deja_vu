@@ -6,6 +6,11 @@ XMFLOAT3 XMF_MATH::operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
 	return { lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z };
 }
 
+XMFLOAT3 XMF_MATH::operator-(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
+{
+	return { lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z };
+}
+
 XMFLOAT3 XMF_MATH::operator*(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
 {
 	return { lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };

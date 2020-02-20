@@ -9,7 +9,7 @@ protected:
 
 public:
 	Camera_FirstPerson();
-	~Camera_FirstPerson();
+	virtual ~Camera_FirstPerson();
 
 	void input(const XMFLOAT3& ir) override;
 };	

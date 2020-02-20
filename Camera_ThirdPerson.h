@@ -11,11 +11,14 @@ protected:
 
 public:
 	Camera_ThirdPerson();
-	~Camera_ThirdPerson();
+	virtual ~Camera_ThirdPerson();
 
 	void setRadius(float radius);
 	float getRadius() const;
 
 	void input(const XMFLOAT3& ir) override;
+
+protected:
+	void fixView();
 };
 
