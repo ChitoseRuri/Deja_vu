@@ -35,7 +35,7 @@ void Car::initCar(ID3D11Device* pDevice)
 	m_wheelRF.init(pDevice);
 	m_wheelRB.init(pDevice);
 
-	size_t index = ResourceDepot::loadGeometry(pDevice, Geometry::CreateCone());
+	size_t index = ResourceDepot::loadGeometry(pDevice, createCarBody());
 	m_body.setMeshbuffer(ResourceDepot::getMeshBuffer(index));
 
 	index = ResourceDepot::loadDDSTesture(pDevice, L"Texture\\brick.dds", L"brick");

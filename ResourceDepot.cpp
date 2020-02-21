@@ -29,13 +29,24 @@ size_t ResourceDepot::addShaderResource(ComPtr<ID3D11ShaderResourceView> pSRV, s
 
 MeshBuffer ResourceDepot::getMeshBuffer(size_t index)
 {
-	return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
+	if (index < m_pIndexBuffer.size())
+		return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
+	else
+		return { nullptr, nullptr, NULL, NULL };
 }
 
 MeshBuffer ResourceDepot::getMeshBuffer(const std::wstring& name)
 {
-	size_t index = m_meshMap.find(name)->second;
-	return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
+	auto itr = m_meshMap.find(name);
+	if (itr != m_meshMap.end())
+	{
+		size_t index = m_meshMap.find(name)->second;
+		return MeshBuffer{ m_pVertexBuffer[index], m_pIndexBuffer[index], m_vertexIndexCount[index], m_vertexStride[index] };
+	}
+	else
+	{
+		return { nullptr, nullptr, NULL, NULL };
+	}
 }
 
 size_t ResourceDepot::loadDDSTesture(ID3D11Device* pDevice, const wchar_t* fileName, std::wstring name)

@@ -46,6 +46,41 @@ public:
 	void changeCamera();
 
 protected:
+	template<class VertexType = VertexPosNormalTex, class IndexType = WORD>
+	inline Geometry::MeshData<VertexType, IndexType> createCarBody();
 private:
 };
 
+template<class VertexType, class IndexType>
+inline Geometry::MeshData<VertexType, IndexType> Car::createCarBody()
+{
+	Geometry::MeshData<VertexType, IndexType> meshData = Geometry::CreateBox();
+
+	// 右面(+X面)
+	meshData.vertexVec[1].pos.z *= 0.5f;
+	meshData.vertexVec[2].pos.z *= 0.5f;
+	// 左面(-X面)
+	meshData.vertexVec[5].pos.z *= 0.5f;
+	meshData.vertexVec[6].pos.z *= 0.5f;
+	// 顶面(+Y面)
+	meshData.vertexVec[8].pos.z *= 0.5f;
+	meshData.vertexVec[9].pos.z *= 0.5f;
+	meshData.vertexVec[10].pos.z *= 0.5f;
+	meshData.vertexVec[11].pos.z *= 0.5f;
+	// 背面(+Z面)
+	meshData.vertexVec[17].pos.z *= 0.5f;
+	meshData.vertexVec[18].pos.z *= 0.5f;
+	// 正面(-Z面)
+	meshData.vertexVec[21].pos.z *= 0.5f;
+	meshData.vertexVec[22].pos.z *= 0.5f;
+
+	for (UINT i = 0; i < 4; ++i)
+	{
+		// 背面(+Z面)
+		meshData.vertexVec[i + 16].normal = XMFLOAT3(0.0f, 1.0f, 1.0f);
+		// 正面(-Z面)
+		meshData.vertexVec[i + 20].normal = XMFLOAT3(0.0f, 1.0f, -1.0f);
+	}
+
+	return meshData;
+}
