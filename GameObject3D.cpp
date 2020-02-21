@@ -380,7 +380,7 @@ void GameObject3D::updateLocalMatrix()
 		0.0f,0.0f,0.0f,1.0f
 	};
 	XMMATRIX scaleMatrix = XMLoadFloat4x4(&scaleF4);
-	XMMATRIX rotationMatrix = XMMatrixRotationX(toRadian(m_localRotation.x)) * XMMatrixRotationY(toRadian(m_localRotation.y)) * XMMatrixRotationZ(toRadian(m_localRotation.z));
+	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(toRadian(m_localRotation.x),toRadian(m_localRotation.y),toRadian(m_localRotation.z));
 	XMFLOAT4X4 locationF4 = {
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
